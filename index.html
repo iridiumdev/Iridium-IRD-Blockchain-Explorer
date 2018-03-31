@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <title>Iridium network statistics and blockchain explorer</title>
+    <!--local jquery, popper and timeago for debugging - prod with cdn-->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/jquery.timeago.js"></script>
+
+    <!--local bootstrap but cdn for prod-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/bootstrap.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/app.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <img class="logo-small img-fluid d-block d-md-block d-lg-none" src="images/64x64.png" alt="Iridium logo">
+    <a class="navbar-brand" href="#">
+        Iridium Network
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a class="nav-link hot_link active" href="#" data-page="home.html"><i class="fa fa-home"></i> Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link hot_link" href="#blockchain" data-page="blockchain.html"><i class="fa fa-cubes"></i> Blockchain</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link hot_link" href="#mempool" data-page="mempool.html"><i class="fas fa-th-list"></i> Mempool</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i> Statistics</a>
+            </li>
+        </ul>
+        <!--<form class="form-inline my-2 my-lg-0">-->
+            <!--<input class="form-control mr-sm-2" type="search" placeholder="Search">-->
+            <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+        <!--</form>-->
+        <div id="stats_updated" class="d-none d-lg-block"><i class="fa fa-bolt"></i></div
+    </div>
+</nav>
+<div class="container">
+    <div id="page"></div>
+    <p id="loading" class="text-center"><i class="fas fa-circle-notch fa-spin"></i></p>
+</div>
+<footer>
+    <div class="text-muted">
+        Block explorer for Iridium : <a target="_blank" href="https://github.com/iridiumdev/block-explorer"><i class="fab fa-github-square"></i> Iridium explorer</a>
+        open sourced under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a>
+    </div>
+</footer>
+<script>
+    var  xhrGetLastBlock;
+    $(function(){
+        console.log("hello world");
+        // get last block header
+        if (xhrGetLastBlock) xhrGetLastBlock.abort();
+        xhrGetBlock = $.ajax({
+            url: api,
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc:"2.0",
+                id: "1",
+                method:"getlastblockheader",
+                params: {}
+            }),
+            dataType: 'json',
+            cache: 'false',
+            success: function(data){
+                lastBlock = data.result ;
+                console.log(lastBlock);
+                routePage();
+            }
+        });
+        // get last block details
+
+    });
+</script>
+</body>
+</html>
