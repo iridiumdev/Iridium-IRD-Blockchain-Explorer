@@ -9,8 +9,19 @@
     margin-top: 10px;
 }
 
-.network {
+.cardpad {
     margin-top: 10px;
+}
+
+.wrapper {
+    position:fixed;
+    left:50%;
+    top: 100px;
+}
+
+.wrapper #loading{
+    position:relative;
+    left:-50%;
 }
 
 .logo-small {

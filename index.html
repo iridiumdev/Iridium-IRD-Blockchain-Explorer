@@ -53,7 +53,9 @@
 </nav>
 <div class="container">
     <div id="page"></div>
-    <p id="loading" class="text-center"><i class="fas fa-circle-notch fa-spin"></i></p>
+    <div class="wrapper">
+    <p id="loading"><i class="fas fa-circle-notch fa-spin"></i></p>
+    </div>
 </div>
 <footer>
     <div class="text-muted">
@@ -62,6 +64,7 @@
     </div>
 </footer>
 <script>
+    var lastBlock;
     var xhrGetLastBlock;
     $(function(){
         console.log("hello world");

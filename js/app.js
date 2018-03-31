@@ -4,14 +4,14 @@ var coinDifficultyTarget=175;
 var symbol="IRD";
 var coinUnits=100000000;
 var blockchainExplorer = "https://explorer.ird.cash/?hash={id}#blockchain_block";
+
 // handle url hash click
 window.onhashchange = function(){
     routePage();
 };
 
-var lastBlock;
-var currentPage;
 
+var currentPage;
 // routing #
 var xhrPageLoading;
 function routePage(loadedCallback) {
@@ -32,10 +32,11 @@ function routePage(loadedCallback) {
         url: page,
         cache: false,
         success: function (data) {
-            $('#loading').hide();
+
             $('#page').show().html(data);
             currentPage.init();
-            currentPage.update();
+            // currentPage.update();
+            // $('#loading').hide();
             if (loadedCallback) loadedCallback();
         }
     });
@@ -60,9 +61,16 @@ function getReadableHashRateString(h){
     return h.toFixed(2) + byteUnits[i];
 }
 
-function getReadableCoins(coins, digits, withoutSymbol){
-    var amount = (parseInt(coins || 0) / coinUnits).toFixed(digits || coinUnits.toString().length - 1);
-    return amount + (withoutSymbol ? '' : (' ' + symbol));
+function shortenLargeNumber(num, digits, withoutSymbol) {
+    var units = ['k', 'M'], decimal;
+
+    for(var i=units.length-1; i>=0; i--) {
+        decimal = Math.pow(1000, i+1);
+        if(num <= -decimal || num >= decimal) {
+            return +(num / decimal).toFixed(digits) + units[i] + (withoutSymbol ? '' : (' ' + symbol));
+        }
+    }
+    return num + (withoutSymbol ? '' : (' ' + symbol));
 }
 
 function getBlockchainUrl(id) {
