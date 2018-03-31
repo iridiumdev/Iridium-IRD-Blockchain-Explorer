@@ -1,45 +1,51 @@
-<div id="siteInfo">
-    <div class="page-header hidden-xs">
-        <h1>
-            <img class="logo" src="images/pool.png" alt="IRD Iridium cryptonote coin logo"><br>
-            Iridium <small>(IRD)</small>
-        </h1>
-    </div>
-
-    <div class="stats">
-        <h3>Latest News</h3>
-        <div>Get rss form website here</div>
-    </div>
-
+<div class="d-none d-lg-block">
+    <img class="logo img-fluid" src="images/pool.png" alt="IRD Iridium cryptonote coin logo">
 </div>
-<div class="row">
-    <div class="col-md-4 stats">
-        <h3>Network</h3>
-        <div><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></div>
-        <div><i class="far fa-clock"></i> Block Found: <span id="networkLastBlockFound"></span></div>
-        <div><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></div>
-        <div><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></div>
-        <div><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></div>
-        <div><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></div>
+
+<div class="network card">
+    <div class="card-header">
+        <p><i class="fas fa-tachometer-alt"></i> Hashrate: <span id="networkHashrate"></span></p>
+        <p><i class="fa fa-bars"></i> Height: <span id="blockchainHeight"></span></p>
+    </div>
+    <div class="card-body">
+        <!--<p><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></p>-->
+        <p><i class="far fa-clock"></i> Last block Found: <span id="networkLastBlockFound"></span></p>
+        <!--<p><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></p>-->
+        <!--<p><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></p>-->
+        <p><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></p>
+        <!--<p><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></p>-->
     </div>
 </div>
+
+<!--<div class="row">-->
+<!--<div class="col-md-4 stats">-->
+<!--<h3>Network</h3>-->
+<!--<div><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></div>-->
+<!--<div><i class="far fa-clock"></i> Block Found: <span id="networkLastBlockFound"></span></div>-->
+<!--<div><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></div>-->
+<!--<div><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></div>-->
+<!--<div><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></div>-->
+<!--<div><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></div>-->
+<!--</div>-->
+<!--</div>-->
 
 <script>
     currentPage = {
-        destroy: function(){
+        destroy: function () {
             $('#networkLastBlockFound').timeago('dispose');
         },
-        init: function(){
-            console.log("init");
+        init: function () {
+            var xhrGetLastBlockDetails;
+        },
+        update: function () {
             // check if lastblock status ok
-            updateText('networkHashrate', getReadableHashRateString(lastBlock.block_header.difficulty / coinDifficultyTarget) + '/sec');
+            updateText('networkHashrate', getReadableHashRateString(lastBlock.block_header.difficulty / coinDifficultyTarget));
             $('#networkLastBlockFound').timeago('update', new Date(lastBlock.block_header.timestamp * 1000).toISOString());
-            updateText('networkDifficulty', lastBlock.block_header.difficulty.toString());
+            // updateText('networkDifficulty', lastBlock.block_header.difficulty.toString());
             updateText('blockchainHeight', lastBlock.block_header.height.toString());
             updateText('networkLastReward', getReadableCoins(lastBlock.block_header.reward, 4));
-            updateText('lastHash', lastBlock.block_header.hash.substr(0, 13) + '...').setAttribute('href', getBlockchainUrl(lastBlock.block_header.hash));
-        },
-        update: function(){
+            // updateText('lastHash', lastBlock.block_header.hash.substr(0, 13) + '...').setAttribute('href', getBlockchainUrl(lastBlock.block_header.hash));
+
         }
     };
 </script>

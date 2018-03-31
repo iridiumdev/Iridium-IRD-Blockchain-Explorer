@@ -35,7 +35,7 @@ function routePage(loadedCallback) {
             $('#loading').hide();
             $('#page').show().html(data);
             currentPage.init();
-            // currentPage.update();
+            currentPage.update();
             if (loadedCallback) loadedCallback();
         }
     });

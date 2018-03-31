@@ -5,7 +5,12 @@
 }
 
 .logo {
-    height: 79px;
+    height: 78px;
+    margin-top: 10px;
+}
+
+.network {
+    margin-top: 10px;
 }
 
 .logo-small {
