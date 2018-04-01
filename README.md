@@ -14,6 +14,7 @@
   * [ ] price in btc
   * [ ] small difficulty graph
   * [ ] search field for blk or tx
+  * [ ] add nodes status/versions
 
 * blockchain
   * [ ] search field
