@@ -3,30 +3,24 @@
 </div>
 
 
-<div class="row">
-    <div class="col-sm-6">
-        <div class="cardpad card">
-            <div class="card-header">
-                Network status
-            </div>
-            <div class="card-body">
+<div class="cardpad card">
+    <div class="card-header">
+        Network status
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6">
                 <p><i class="fas fa-tachometer-alt"></i> Hashrate: <span id="networkHashrate"></span></p>
                 <p><i class="fa fa-bars"></i> Height: <span id="blockchainHeight"></span></p>
                 <!--<p><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></p>-->
                 <p><i class="far fa-clock"></i> Last block Found: <span id="networkLastBlockFound"></span></p>
+                <!--<p><i class="far fa-clock"></i> Timestamp: <span id="networkLastBlockFoundTS"></span></p>-->
                 <!--<p><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></p>-->
                 <!--<p><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></p>-->
                 <p><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></p>
                 <!--<p><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></p>-->
             </div>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="cardpad card">
-            <div class="card-header">
-                Iridium last informations
-            </div>
-            <div class="card-body">
+            <div class="col-sm-6">
                 <p><i class="far fa-money-bill-alt"></i> Current Supply: <span id="alreadyGeneratedCoins"></span></p>
                 <p><i class="fas fa-university"></i> Emission: <span id="supplypercent"></span></p>
                 <p><i class="fas fa-exchange-alt"></i> Total transactions: <span id="alreadyGeneratedTransactions"></span></p>
@@ -35,17 +29,26 @@
         </div>
     </div>
 </div>
-<!--<div class="row">-->
-<!--<div class="col-md-4 stats">-->
-<!--<h3>Network</h3>-->
-<!--<div><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></div>-->
-<!--<div><i class="far fa-clock"></i> Block Found: <span id="networkLastBlockFound"></span></div>-->
-<!--<div><i class="fa fa-unlock-alt"></i> Difficulty: <span id="networkDifficulty"></span></div>-->
-<!--<div><i class="fa fa-bars"></i> Blockchain Height: <span id="blockchainHeight"></span></div>-->
-<!--<div><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></div>-->
-<!--<div><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></div>-->
-<!--</div>-->
-<!--</div>-->
+<div class="cardpad card">
+    <div class="card-header">
+        <span id="nb_tx"></span> transaction<span id="tx_s"></span> in pool
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th><i class="fas fa-ellipsis-h"></i> Hash</th>
+                <th><i class="fas fa-donate"></i> Fee</th>
+                <th><i class="fas fa-dollar-sign"></i> Total Amount</th>
+                <th><i class="far fa-hdd"></i> Size</th>
+            </tr>
+            </thead>
+            <tbody id="transactions_rows">
+
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
     currentPage = {
@@ -53,10 +56,10 @@
             $('#networkLastBlockFound').timeago('dispose');
         },
         init: function () {
-            console.log("init home");
-            $('#loading').show();
+            // Get last block details
             var xhrGetLastBlockDetails;
             if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
+            $('#loading').show();
             xhrGetLastBlockDetails = $.ajax({
                 url: api,
                 method: "POST",
@@ -72,27 +75,81 @@
                 cache: 'false',
                 success: function (data) {
                     lastBlockDetail = data.result ;
-                    console.log(lastBlockDetail);
-                    currentPage.update();
+                    currentPage.update_network();
                     $('#loading').hide();
                 }
             });
 
-
-
+            $('#loading').show();
+            // Get mempool details
+            var xhrGetTxPool;
+            if (xhrGetTxPool) xhrGetTxPool.abort();
+            xhrGetTxPool = $.ajax({
+                url: api,
+                method: "POST",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "3",
+                    method: "f_on_transactions_pool_json"
+                }),
+                dataType: 'json',
+                cache: 'false',
+                success: function (data) {
+                    txPool = data.result ;
+                    currentPage.update_tx_pool();
+                    $('#loading').hide();
+                }
+            });
         },
-        update: function () {
+        update_network: function () {
             // check if lastblock status ok
             updateText('networkHashrate', getReadableHashRateString(lastBlock.block_header.difficulty / coinDifficultyTarget));
             $('#networkLastBlockFound').timeago('update', new Date(lastBlock.block_header.timestamp * 1000).toISOString());
+            // updateText('networkLastBlockFoundTS', lastBlock.block_header.timestamp.toString());
             // updateText('networkDifficulty', lastBlock.block_header.difficulty.toString());
             updateText('blockchainHeight', lastBlock.block_header.height.toString());
-            updateText('networkLastReward', shortenLargeNumber(lastBlock.block_header.reward, 2, 0));
+            updateText('networkLastReward', getReadableCoins(lastBlock.block_header.reward, 2));
             // updateText('lastHash', lastBlock.block_header.hash.substr(0, 13) + '...').setAttribute('href', getBlockchainUrl(lastBlock.block_header.hash));
             updateText('alreadyGeneratedCoins', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedCoins/coinUnits, 6, 0));
             updateText('supplypercent', (lastBlockDetail.block.alreadyGeneratedCoins/25000000000000).toFixed(2)+' %');
             updateText('alreadyGeneratedTransactions', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedTransactions,3,1));
             updateText('major_version', lastBlock.block_header.major_version.toString());
+        },
+        update_tx_pool: function () {
+            updateText('nb_tx', txPool.transactions.length.toString());
+            if( txPool.transactions.length > 1 ) updateText('nb_s', 's');
+            renderTransactions(txPool.transactions)
         }
     };
+
+    function getTransactionCells(transaction) {
+        return '<td>' + transaction.hash + '</td>' +
+            '<td>' + getReadableCoins(transaction.fee, 4, true) + '</td>' +
+            '<td>' + getReadableCoins(transaction.amount_out, 2, false) + '</td>' +
+            '<td>' + transaction.size + '</td>';
+    }
+
+    function getTransactionRowElement(transaction, jsonString){
+        var row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-hash', transaction.hash);
+        row.setAttribute('id', 'transactionRow' + transaction.hash);
+        row.innerHTML = getTransactionCells(transaction);
+        return row;
+    }
+    function renderTransactions(transactionResults){
+        var $transactionsRows = $('#transactions_rows');
+        for (var i = 0; i < transactionResults.length; i++){
+            var transaction = transactionResults[i];
+            var transactionJson = JSON.stringify(transaction);
+            var existingRow = document.getElementById('transactionRow' + transaction.hash);
+            if (existingRow && existingRow.getAttribute('data-json') !== transactionJson){
+                $(existingRow).replaceWith(getTransactionRowElement(transaction, transactionJson));
+            }
+            else if (!existingRow){
+                var transactionElement = getTransactionRowElement(transaction, transactionJson);
+                $transactionsRows.append(transactionElement);
+            }
+        }
+    }
 </script>

@@ -1,5 +1,5 @@
 // settings
-var api = "https://explorer.ird.cash/json_rpc";
+var api = "http://localhost:13007/json_rpc";
 var coinDifficultyTarget=175;
 var symbol="IRD";
 var coinUnits=100000000;
@@ -32,11 +32,8 @@ function routePage(loadedCallback) {
         url: page,
         cache: false,
         success: function (data) {
-
             $('#page').show().html(data);
             currentPage.init();
-            // currentPage.update();
-            // $('#loading').hide();
             if (loadedCallback) loadedCallback();
         }
     });
@@ -59,6 +56,11 @@ function getReadableHashRateString(h){
         i++;
     }
     return h.toFixed(2) + byteUnits[i];
+}
+
+function getReadableCoins(coins, digits, withoutSymbol){
+    var amount = (parseInt(coins || 0) / coinUnits).toFixed(digits || coinUnits.toString().length - 1);
+    return amount + (withoutSymbol ? '' : (' ' + symbol));
 }
 
 function shortenLargeNumber(num, digits, withoutSymbol) {
