@@ -1,5 +1,5 @@
 // settings
-var api = "http://localhost:13007/json_rpc";
+var api = "https://explorer.beta.ird.cash/json_rpc";
 var coinDifficultyTarget=175;
 var symbol="IRD";
 var coinUnits=100000000;
