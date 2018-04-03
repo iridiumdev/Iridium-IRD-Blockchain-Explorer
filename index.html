@@ -83,12 +83,51 @@
     var lastBlock;
     var xhrGetLastBlock;
 
+    function pulseLiveUpdate(){
+        var stats_update = document.getElementById('stats_updated');
+        stats_update.style.transition = 'opacity 100ms ease-out';
+        stats_update.style.opacity = 1;
+        setTimeout(function(){
+            stats_update.style.transition = 'opacity 25000ms linear';
+            stats_update.style.opacity = 0;
+        }, 100);
+    }
+
+    function fetchLiveStats() {
+        $.ajax({
+            timeout: 3000,
+            url: api,
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "1",
+                method: "getlastblockheader"
+            }),
+            dataType: 'json',
+            cache: 'false'
+        }).done(function (data) {
+            if (data.hasOwnProperty('result')) {
+                lastBlock = data.result;
+                pulseLiveUpdate();
+                console.log("tick : "+new Date());
+                currentPage.update();
+            } else {
+                $('#alert').addClass('show');
+                updateText('alert_text', data.error.message);
+                $('#loading').hide();
+            }
+
+        }).always(function () {
+            setTimeout(function(){
+                fetchLiveStats();
+            }, 30000);
+        });
+    }
+
     $(function () {
-        console.log("hello world");
         // get last block header
         if (xhrGetLastBlock) xhrGetLastBlock.abort();
         xhrGetLastBlock = $.ajax({
-            crossDomain: true,
             timeout: 3000,
             url: api,
             method: "POST",
@@ -101,18 +140,18 @@
             cache: 'false'
         })
             .done(function (data) {
-                if( data.hasOwnProperty('result')){
+                if (data.hasOwnProperty('result')) {
                     lastBlock = data.result;
-                    routePage();
+                    routePage(fetchLiveStats);
                 } else {
                     $('#alert').addClass('show');
-                    updateText('alert_text',data.error.message );
+                    updateText('alert_text', data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetLastBlock, textStatus, errorThrown) {
                 $('#alert').addClass('show');
-                updateText('alert_text','Can\'t connect to api' );
+                updateText('alert_text', 'Can\'t connect to api');
                 $('#loading').hide();
             });
     });

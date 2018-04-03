@@ -87,7 +87,7 @@ a:hover {
     opacity: 0;
     float: right;
     margin-left: 30px;
-    color: #e8e8e8;
+    color: #FFFFFF;
     line-height: 47px;
     font-size: 0.9em;
 }
@@ -184,9 +184,7 @@ h4,
     color: #ffffff;
     background-color: #EC6D00;
 }
-#stats_updated {
-    color: #F8FBDC;
-}
+
 hr {
     border-top-color: #BBBBBB;
 }

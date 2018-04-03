@@ -35,7 +35,7 @@
     <div class="card-header">
         <span id="nb_tx"></span>
     </div>
-    <div id="tx_table" class="card-body table-responsive">
+    <div id="tx_table" class="card-body table-responsive d-none">
         <table class="table table-hover">
             <thead>
             <tr>
@@ -85,78 +85,10 @@
             if (xhrGetBlocks) xhrGetBlocks.abort();
         },
         init: function () {
-            $('#tx_table').hide();
-
-            // Get last block details
-            if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
-            $('#loading').show();
-            xhrGetLastBlockDetails = $.ajax({
-                url: api,
-                method: "POST",
-                data: JSON.stringify({
-                    jsonrpc: "2.0",
-                    id: "2",
-                    method: "f_block_json",
-                    params: {
-                        hash: lastBlock.block_header.hash
-                    }
-                }),
-                dataType: 'json',
-                cache: 'false'
-            })
-                .done(function (data) {
-                    // todo : check result.status OK
-                    lastBlockDetail = data.result;
-                    currentPage.update_network();
-                    $('#loading').hide();
-                });
-
-            // Get mempool details
-            if (xhrGetTxPool) xhrGetTxPool.abort();
-            $('#loading').show();
-            xhrGetTxPool = $.ajax({
-                url: api,
-                method: "POST",
-                data: JSON.stringify({
-                    jsonrpc: "2.0",
-                    id: "3",
-                    method: "f_on_transactions_pool_json"
-                }),
-                dataType: 'json',
-                cache: 'false'
-            })
-                .done(function (data) {
-                    // todo : check result.status OK
-                    txPool = data.result;
-                    currentPage.update_tx_pool();
-                    $('#loading').hide();
-                });
-
-            // Get last 30 blocks
-            if (xhrGetBlocks) xhrGetBlocks.abort();
-            $('#loading').show();
-            xhrGetBlocks = $.ajax({
-                url: api,
-                method: "POST",
-                data: JSON.stringify({
-                    jsonrpc: "2.0",
-                    id: "4",
-                    method: "f_blocks_list_json",
-                    params: {
-                        height: lastBlock.block_header.height
-                    }
-                }),
-                dataType: 'json',
-                cache: 'false'
-            })
-                .done(function (data) {
-                    // todo : check result.status OK
-                    // todo add reward in f_blocks_list_json method
-                    blocksList = data.result.blocks;
-                    currentPage.update_block_list();
-                    $('#loading').hide();
-                });
-
+            getLastBlockDetails();
+            getTxPool();
+            getBlocks();
+            $('#loading').hide();
         },
         update_network: function () {
             // check if lastblock status ok
@@ -164,7 +96,8 @@
             $('#networkLastBlockFound').timeago('update', new Date(lastBlock.block_header.timestamp * 1000).toISOString());
             // updateText('networkLastBlockFoundTS', lastBlock.block_header.timestamp.toString());
             // updateText('networkDifficulty', lastBlock.block_header.difficulty.toString());
-            updateText('blockchainHeight', lastBlock.block_header.height.toString());
+            updateText('blockchainHeight', lastBlock.block_header.height);
+            $('#blockchainHeight').attr('data-height', lastBlock.block_header.height)
             updateText('networkLastReward', getReadableCoins(lastBlock.block_header.reward, 2));
             // updateText('lastHash', lastBlock.block_header.hash.substr(0, 13) + '...').setAttribute('href', getBlockchainUrl(lastBlock.block_header.hash));
             updateText('alreadyGeneratedCoins', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedCoins / coinUnits, 6, 0));
@@ -174,9 +107,9 @@
         },
         update_tx_pool: function () {
             if (txPool.transactions.length > 0) {
-                $('#tx_table').show();
+                $('#tx_table').removeClass('d-none');
             } else {
-                $('#tx_table').hide();
+                $('#tx_table').addClass('d-none');
             }
             updateText('nb_tx', txPool.transactions.length.toString() + ' transaction' + (txPool.transactions.length > 1 ? 's' : '') + ' in pool');
             renderTransactions(txPool.transactions)
@@ -184,8 +117,87 @@
         update_block_list: function () {
             updateText('nb_blocks', ': ' + blocksList.length.toString());
             renderBlocks(blocksList);
+        },
+        update: function () {
+            if (lastBlock.block_header.height != $('#blockchainHeight').attr('data-height')) {
+                getLastBlockDetails();
+                getBlocks();
+            } else {
+                currentPage.update_network();
+            }
         }
     };
+
+    function getLastBlockDetails() {
+        if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
+        xhrGetLastBlockDetails = $.ajax({
+            url: api,
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "2",
+                method: "f_block_json",
+                params: {
+                    hash: lastBlock.block_header.hash
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                // todo : check result.status OK
+                lastBlockDetail = data.result;
+                currentPage.update_network();
+            });
+    }
+
+    function getTxPool() {
+        if (xhrGetTxPool) xhrGetTxPool.abort();
+        xhrGetTxPool = $.ajax({
+            url: api,
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "3",
+                method: "f_on_transactions_pool_json"
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                // todo : check result.status OK
+                txPool = data.result;
+                currentPage.update_tx_pool();
+            }).always(function () {
+                setTimeout(function(){
+                    getTxPool();
+                }, 10000);
+            });
+    }
+
+    function getBlocks() {
+        if (xhrGetBlocks) xhrGetBlocks.abort();
+        xhrGetBlocks = $.ajax({
+            url: api,
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "4",
+                method: "f_blocks_list_json",
+                params: {
+                    height: lastBlock.block_header.height
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                // todo : check result.status OK
+                // todo add reward in f_blocks_list_json method
+                blocksList = data.result.blocks;
+                currentPage.update_block_list();
+            });
+    }
 
     function getTransactionCells(transaction) {
         return '<td>' + transaction.hash + '</td>' +
