@@ -1,15 +1,15 @@
-<div class="d-none d-lg-block">
-    <img class="logo img-fluid" src="images/pool.png" alt="IRD Iridium cryptonote coin logo">
-</div>
+<!--<div class="d-none d-lg-block">-->
+    <!--<img class="logo img-fluid" src="images/pool.png" alt="IRD Iridium cryptonote coin logo">-->
+<!--</div>-->
 
 
 <div class="cardpad card">
     <div class="card-header">
-        Network status
+        Iridium (IRD) Network status
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <p><i class="fas fa-tachometer-alt"></i> Hashrate: <span id="networkHashrate"></span></p>
                 <p><i class="fa fa-bars"></i> Height: <span id="blockchainHeight"></span></p>
                 <!--<p><i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span></p>-->
@@ -20,12 +20,18 @@
                 <p><i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span></p>
                 <!--<p><i class="fas fa-th"></i> Last Hash: <a id="lastHash" target="_blank"></a></p>-->
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <p><i class="far fa-money-bill-alt"></i> Current Supply: <span id="alreadyGeneratedCoins"></span></p>
                 <p><i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span></p>
                 <p><i class="fas fa-exchange-alt"></i> Total transactions: <span
                         id="alreadyGeneratedTransactions"></span></p>
                 <p><i class="fas fa-code-branch"></i> Blockchain version: <span id="major_version"></span></p>
+            </div>
+            <div class="col-sm-4">
+                <p><i class="fab fa-btc"></i></i> <span id="btc"></span></p>
+                <p><i class="fas fa-euro-sign"></i> <span id="eur"></span></p>
+                <p><i class="fas fa-dollar-sign"></i> <span id="dol"></span></p>
+                <div class="marketFooter">Powered by <a href="https://tradeogre.com/exchange/BTC-IRD" target="_blank">Tradeogre</a></div>
             </div>
         </div>
     </div>
@@ -33,7 +39,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        <span id="nb_tx"></span>
+        <span id="nb_tx"></span><i id="tx_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <div id="tx_table" class="card-body table-responsive d-none">
         <table class="table table-hover">
@@ -54,7 +60,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        Lasts blocks found <span id="nb_blocks"></span>
+        Lasts 10 blocks found <span id="nb_blocks"></span>
     </div>
     <div id="block_table" class="card-body table-responsive">
         <table class="table table-hover">
@@ -64,9 +70,9 @@
                 <th><i class="fas fa-microchip"></i> Difficulty</th>
                 <th><i class="fas fa-ellipsis-h"></i> Block Hash</th>
                 <th><i class="far fa-clock"></i> Time found</th>
-                <th><i class="far fa-hdd"></i> Size</th>
                 <th><i class="fas fa-piggy-bank"></i> Reward</th>
-                <th><i class="far fa-hdd"></i> tx</th>
+                <th><i class="far fa-hdd"></i> Size</th>
+                <th><i class="fas fa-exchange-alt"></i> tx</th>
             </tr>
             </thead>
             <tbody id="blocks_rows">
@@ -85,8 +91,8 @@
             if (xhrGetBlocks) xhrGetBlocks.abort();
         },
         init: function () {
-            getLastBlockDetails();
             getTxPool();
+            getLastBlockDetails();
             getBlocks();
             $('#loading').hide();
         },
@@ -115,7 +121,7 @@
             renderTransactions(txPool.transactions)
         },
         update_block_list: function () {
-            updateText('nb_blocks', ': ' + blocksList.length.toString());
+            // updateText('nb_blocks', ': ' + blocksList.length.toString());
             renderBlocks(blocksList);
         },
         update: function () {
@@ -170,9 +176,20 @@
                 currentPage.update_tx_pool();
             }).always(function () {
                 setTimeout(function(){
+                    pulseTxUpdate();
                     getTxPool();
-                }, 10000);
+                }, 12000);
             });
+    }
+
+    function pulseTxUpdate(){
+        var tx_update = document.getElementById('tx_updated');
+        tx_update.style.transition = 'opacity 100ms ease-out';
+        tx_update.style.opacity = 1;
+        setTimeout(function(){
+            tx_update.style.transition = 'opacity 900ms linear';
+            tx_update.style.opacity = 0;
+        }, 100);
     }
 
     function getBlocks() {
@@ -255,7 +272,7 @@
 
     function renderBlocks(blocksList) {
         var $blocksRows = $('#blocks_rows');
-        for (var i = 0; i < blocksList.length; i++) {
+        for (var i = 0; i < 10; i++) {
             var block = blocksList[i];
             var blockJson = JSON.stringify(block);
             var existingRow = document.getElementById('blockRow' + block.height);
@@ -279,4 +296,6 @@
             }
         }
     }
+
+
 </script>

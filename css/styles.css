@@ -86,19 +86,19 @@ a:hover {
 #stats_updated{
     opacity: 0;
     float: right;
-    margin-left: 30px;
+    /*margin-left: 30px;*/
     color: #FFFFFF;
-    line-height: 47px;
+    /*line-height: 47px;*/
     font-size: 0.9em;
 }
 
-
-/*footer{*/
-    /*position: fixed;*/
-    /*bottom: 0;*/
-    /*width: 100%;*/
-    /*background-color: #dddddd;*/
-/*}*/
+#tx_updated{
+    opacity: 0;
+    float: right;
+    /*margin-left: 30px;*/
+    /*line-height: 47px;*/
+    font-size: 0.9em;
+}
 
 .footer {
     position: absolute;
@@ -122,7 +122,7 @@ body {
     color: #0A000D;
     font-family: 'Lato', Arial, sans-serif;
     margin-bottom: 50px;
-    margin-top: 34px;
+    margin-top: 60px;
 }
 h1,
 h2,
@@ -152,42 +152,29 @@ h4,
 }
 .navbar-dark {
     background-color: #000000;
-    border-color: #f9f9f8;
-    border-width: 0;
-    height: 34px;
+    /*border-color: #f9f9f8;*/
+    /*border-width: 0;*/
+    /*height: 34px;*/
 }
-.navbar-dark .container {
-    background-color: rgba(0, 0, 0, 0);
-}
-.navbar-dark .navbar-brand {
-    color: #fff;
-}
-.navbar-dark .navbar-brand:hover,
-.navbar-dark .navbar-brand:focus {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0);
-}
-.navbar-dark .navbar-text {
-    color: #CEE3E4;
-}
-.navbar-dark .navbar-nav > li > a {
-    color: #F9F9F9;
-}
-.navbar-dark .navbar-nav > li > a:hover,
-.navbar-dark .navbar-nav > li > a:focus {
-    color: #ffffff;
-    background-color: transparent;
-}
-.navbar-dark .navbar-nav > .active > a,
-.navbar-dark .navbar-nav > .active > a:hover,
-.navbar-dark .navbar-nav > .active > a:focus {
-    color: #ffffff;
-    background-color: #EC6D00;
-}
+
 
 hr {
     border-top-color: #BBBBBB;
 }
+
+.navbar-brand {
+    padding-bottom: 0;
+}
+
+.marketFooter {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+.navbar-toggler-icon {
+    height: 1.3em;
+}
+
 .stats > div:not(#addressError) {
     color: #111300;
     padding: 10px 0px;
