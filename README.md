@@ -1,5 +1,7 @@
 # The new iridium block explorer
 
+Available here : https://explorer.beta.ird.cash
+
 ![New block explorer](https://cdn.discordapp.com/attachments/363789627976581122/430699191430414337/be.png)
 
 ## task list
