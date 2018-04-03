@@ -23,7 +23,8 @@
             <div class="col-sm-6">
                 <p><i class="far fa-money-bill-alt"></i> Current Supply: <span id="alreadyGeneratedCoins"></span></p>
                 <p><i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span></p>
-                <p><i class="fas fa-exchange-alt"></i> Total transactions: <span id="alreadyGeneratedTransactions"></span></p>
+                <p><i class="fas fa-exchange-alt"></i> Total transactions: <span
+                        id="alreadyGeneratedTransactions"></span></p>
                 <p><i class="fas fa-code-branch"></i> Blockchain version: <span id="major_version"></span></p>
             </div>
         </div>
@@ -53,7 +54,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        Lasts blocks found
+        Lasts blocks found <span id="nb_blocks"></span>
     </div>
     <div id="block_table" class="card-body table-responsive">
         <table class="table table-hover">
@@ -79,12 +80,14 @@
     currentPage = {
         destroy: function () {
             $('#networkLastBlockFound').timeago('dispose');
+            if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
+            if (xhrGetTxPool) xhrGetTxPool.abort();
+            if (xhrGetBlocks) xhrGetBlocks.abort();
         },
         init: function () {
             $('#tx_table').hide();
 
             // Get last block details
-            var xhrGetLastBlockDetails;
             if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
             $('#loading').show();
             xhrGetLastBlockDetails = $.ajax({
@@ -99,16 +102,16 @@
                     }
                 }),
                 dataType: 'json',
-                cache: 'false',
-                success: function (data) {
-                    lastBlockDetail = data.result ;
+                cache: 'false'
+            })
+                .done(function (data) {
+                    // todo : check result.status OK
+                    lastBlockDetail = data.result;
                     currentPage.update_network();
                     $('#loading').hide();
-                }
-            });
+                });
 
             // Get mempool details
-            var xhrGetTxPool;
             if (xhrGetTxPool) xhrGetTxPool.abort();
             $('#loading').show();
             xhrGetTxPool = $.ajax({
@@ -120,13 +123,40 @@
                     method: "f_on_transactions_pool_json"
                 }),
                 dataType: 'json',
-                cache: 'false',
-                success: function (data) {
-                    txPool = data.result ;
+                cache: 'false'
+            })
+                .done(function (data) {
+                    // todo : check result.status OK
+                    txPool = data.result;
                     currentPage.update_tx_pool();
                     $('#loading').hide();
-                }
-            });
+                });
+
+            // Get last 30 blocks
+            if (xhrGetBlocks) xhrGetBlocks.abort();
+            $('#loading').show();
+            xhrGetBlocks = $.ajax({
+                url: api,
+                method: "POST",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "4",
+                    method: "f_blocks_list_json",
+                    params: {
+                        height: lastBlock.block_header.height
+                    }
+                }),
+                dataType: 'json',
+                cache: 'false'
+            })
+                .done(function (data) {
+                    // todo : check result.status OK
+                    // todo add reward in f_blocks_list_json method
+                    blocksList = data.result.blocks;
+                    currentPage.update_block_list();
+                    $('#loading').hide();
+                });
+
         },
         update_network: function () {
             // check if lastblock status ok
@@ -137,19 +167,23 @@
             updateText('blockchainHeight', lastBlock.block_header.height.toString());
             updateText('networkLastReward', getReadableCoins(lastBlock.block_header.reward, 2));
             // updateText('lastHash', lastBlock.block_header.hash.substr(0, 13) + '...').setAttribute('href', getBlockchainUrl(lastBlock.block_header.hash));
-            updateText('alreadyGeneratedCoins', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedCoins/coinUnits, 6, 0));
-            updateText('supplypercent', (lastBlockDetail.block.alreadyGeneratedCoins/25000000000000).toFixed(2)+' %');
-            updateText('alreadyGeneratedTransactions', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedTransactions,3,1));
+            updateText('alreadyGeneratedCoins', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedCoins / coinUnits, 6, 0));
+            updateText('supplypercent', (lastBlockDetail.block.alreadyGeneratedCoins / 25000000000000).toFixed(2) + ' %');
+            updateText('alreadyGeneratedTransactions', shortenLargeNumber(lastBlockDetail.block.alreadyGeneratedTransactions, 3, 1));
             updateText('major_version', lastBlock.block_header.major_version.toString());
         },
         update_tx_pool: function () {
-            if( txPool.transactions.length > 0 ){
+            if (txPool.transactions.length > 0) {
                 $('#tx_table').show();
             } else {
                 $('#tx_table').hide();
             }
             updateText('nb_tx', txPool.transactions.length.toString() + ' transaction' + (txPool.transactions.length > 1 ? 's' : '') + ' in pool');
             renderTransactions(txPool.transactions)
+        },
+        update_block_list: function () {
+            updateText('nb_blocks', ': ' + blocksList.length.toString());
+            renderBlocks(blocksList);
         }
     };
 
@@ -160,7 +194,7 @@
             '<td>' + transaction.size + '</td>';
     }
 
-    function getTransactionRowElement(transaction, jsonString){
+    function getTransactionRowElement(transaction, jsonString) {
         var row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
         row.setAttribute('data-hash', transaction.hash);
@@ -168,18 +202,68 @@
         row.innerHTML = getTransactionCells(transaction);
         return row;
     }
-    function renderTransactions(transactionResults){
+
+    function renderTransactions(transactionResults) {
         var $transactionsRows = $('#transactions_rows');
-        for (var i = 0; i < transactionResults.length; i++){
+        for (var i = 0; i < transactionResults.length; i++) {
             var transaction = transactionResults[i];
             var transactionJson = JSON.stringify(transaction);
             var existingRow = document.getElementById('transactionRow' + transaction.hash);
-            if (existingRow && existingRow.getAttribute('data-json') !== transactionJson){
+            if (existingRow && existingRow.getAttribute('data-json') !== transactionJson) {
                 $(existingRow).replaceWith(getTransactionRowElement(transaction, transactionJson));
             }
-            else if (!existingRow){
+            else if (!existingRow) {
                 var transactionElement = getTransactionRowElement(transaction, transactionJson);
                 $transactionsRows.append(transactionElement);
+            }
+        }
+    }
+
+    function getBlockRowElement(block, jsonString) {
+
+        var row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-height', block.height);
+        row.setAttribute('id', 'blockRow' + block.height);
+        row.setAttribute('title', block.hash);
+
+        var columns =
+            '<td>' + block.height + '</td>' +
+            '<td>' + block.difficulty + '</td>' +
+            '<td>' + formatBlockLink(block.hash) + '</td>' +
+            '<td>' + formatDate(block.timestamp) + '</td>' +
+            '<td>' + 'reward' + '</td>' +
+            '<td>' + block.cumul_size + '</td>' +
+            '<td>' + block.tx_count + '</td>';
+
+        row.innerHTML = columns;
+
+        return row;
+    }
+
+    function renderBlocks(blocksList) {
+        var $blocksRows = $('#blocks_rows');
+        for (var i = 0; i < blocksList.length; i++) {
+            var block = blocksList[i];
+            var blockJson = JSON.stringify(block);
+            var existingRow = document.getElementById('blockRow' + block.height);
+            if (existingRow && existingRow.getAttribute('data-json') !== blockJson) {
+                $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
+            }
+            else if (!existingRow) {
+                var blockElement = getBlockRowElement(block, blockJson);
+                var inserted = false;
+                var rows = $blocksRows.children().get();
+                for (var f = 0; f < rows.length; f++) {
+                    var bHeight = parseInt(rows[f].getAttribute('data-height'));
+                    if (bHeight < block.height) {
+                        inserted = true;
+                        $(rows[f]).before(blockElement);
+                        break;
+                    }
+                }
+                if (!inserted)
+                    $blocksRows.append(blockElement);
             }
         }
     }

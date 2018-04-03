@@ -12,6 +12,11 @@ window.onhashchange = function(){
 
 
 var currentPage;
+var xhrGetLastBlockDetails;
+var xhrGetTxPool;
+var xhrGetBlocks;
+
+
 // routing #
 var xhrPageLoading;
 function routePage(loadedCallback) {
@@ -41,7 +46,7 @@ function routePage(loadedCallback) {
 
 // common functions
 function updateText(e, t){
-    console.log("e: " + e + " t: " + t);
+    // console.log("e: " + e + " t: " + t); debug updatetext
     var el = document.getElementById(e);
     if (el.textContent !== t){
         el.textContent = t;
@@ -76,6 +81,18 @@ function shortenLargeNumber(num, digits, withoutSymbol) {
     return num + (withoutSymbol ? '' : (' ' + symbol));
 }
 
+function formatDate(time){
+    if (!time) return '';
+    return new Date(parseInt(time) * 1000).toLocaleString();
+}
+
 function getBlockchainUrl(id) {
     return blockchainExplorer.replace('{symbol}', symbol.toLowerCase()).replace('{id}', id);
+}
+
+function formatBlockLink(hash){
+    return '<a href="' + getBlockchainUrl(hash) + '">' + hash + '</a>';
+}
+function formatPaymentLink(hash){
+    return '<a href="' + getTransactionUrl(hash) + '">' + hash + '</a>';
 }
