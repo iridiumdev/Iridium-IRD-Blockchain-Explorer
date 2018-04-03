@@ -22,22 +22,23 @@
             </div>
             <div class="col-sm-6">
                 <p><i class="far fa-money-bill-alt"></i> Current Supply: <span id="alreadyGeneratedCoins"></span></p>
-                <p><i class="fas fa-university"></i> Emission: <span id="supplypercent"></span></p>
+                <p><i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span></p>
                 <p><i class="fas fa-exchange-alt"></i> Total transactions: <span id="alreadyGeneratedTransactions"></span></p>
                 <p><i class="fas fa-code-branch"></i> Blockchain version: <span id="major_version"></span></p>
             </div>
         </div>
     </div>
 </div>
+
 <div class="cardpad card">
     <div class="card-header">
-        <span id="nb_tx"></span> transaction<span id="tx_s"></span> in pool
+        <span id="nb_tx"></span>
     </div>
-    <div class="card-body">
+    <div id="tx_table" class="card-body table-responsive">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th><i class="fas fa-ellipsis-h"></i> Hash</th>
+                <th><i class="fas fa-ellipsis-h"></i> Transaction hash</th>
                 <th><i class="fas fa-donate"></i> Fee</th>
                 <th><i class="fas fa-dollar-sign"></i> Total Amount</th>
                 <th><i class="far fa-hdd"></i> Size</th>
@@ -50,12 +51,38 @@
     </div>
 </div>
 
+<div class="cardpad card">
+    <div class="card-header">
+        Lasts blocks found
+    </div>
+    <div id="block_table" class="card-body table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th><i class="fa fa-bars"></i> Height</th>
+                <th><i class="fas fa-microchip"></i> Difficulty</th>
+                <th><i class="fas fa-ellipsis-h"></i> Block Hash</th>
+                <th><i class="far fa-clock"></i> Time found</th>
+                <th><i class="far fa-hdd"></i> Size</th>
+                <th><i class="fas fa-piggy-bank"></i> Reward</th>
+                <th><i class="far fa-hdd"></i> tx</th>
+            </tr>
+            </thead>
+            <tbody id="blocks_rows">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <script>
     currentPage = {
         destroy: function () {
             $('#networkLastBlockFound').timeago('dispose');
         },
         init: function () {
+            $('#tx_table').hide();
+
             // Get last block details
             var xhrGetLastBlockDetails;
             if (xhrGetLastBlockDetails) xhrGetLastBlockDetails.abort();
@@ -80,10 +107,10 @@
                 }
             });
 
-            $('#loading').show();
             // Get mempool details
             var xhrGetTxPool;
             if (xhrGetTxPool) xhrGetTxPool.abort();
+            $('#loading').show();
             xhrGetTxPool = $.ajax({
                 url: api,
                 method: "POST",
@@ -116,8 +143,12 @@
             updateText('major_version', lastBlock.block_header.major_version.toString());
         },
         update_tx_pool: function () {
-            updateText('nb_tx', txPool.transactions.length.toString());
-            if( txPool.transactions.length > 1 ) updateText('nb_s', 's');
+            if( txPool.transactions.length > 0 ){
+                $('#tx_table').show();
+            } else {
+                $('#tx_table').hide();
+            }
+            updateText('nb_tx', txPool.transactions.length.toString() + ' transaction' + (txPool.transactions.length > 1 ? 's' : '') + ' in pool');
             renderTransactions(txPool.transactions)
         }
     };
