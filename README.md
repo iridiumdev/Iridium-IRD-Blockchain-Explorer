@@ -1,6 +1,8 @@
 # The new iridium block explorer
 
-![New block explorer](https://cdn.discordapp.com/attachments/363789627976581122/430148606322933777/bx.png)
+Available here : https://explorer.beta.ird.cash
+
+![New block explorer](https://cdn.discordapp.com/attachments/363789627976581122/430699191430414337/be.png)
 
 ## task list
 
@@ -9,6 +11,7 @@
   * [x] total emission with percentage
   * [x] total transactions
   * [x] show tx in mempool
+  * [x] show last found blocks
   * [ ] price in usd
   * [ ] price in eur
   * [ ] price in btc
