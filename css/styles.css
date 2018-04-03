@@ -19,6 +19,15 @@
     top: 100px;
 }
 
+#tx_table {
+    padding: 0;
+    font-size: 0.76em;
+}
+
+#block_table {
+    padding: 0;
+    font-size: 0.76em;
+}
 .wrapper #loading{
     position:relative;
     left:-50%;

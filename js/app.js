@@ -41,6 +41,7 @@ function routePage(loadedCallback) {
 
 // common functions
 function updateText(e, t){
+    console.log("e: " + e + " t: " + t);
     var el = document.getElementById(e);
     if (el.textContent !== t){
         el.textContent = t;
