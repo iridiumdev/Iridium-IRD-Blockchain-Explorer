@@ -1,8 +1,14 @@
-# The new iridium block explorer
+# iridium block explorer (IRD)
 
-Available here : https://explorer.beta.ird.cash
+This is the next version of the iridium block explorer, network status and pool lists. an online version is available here : https://explorer.beta.ird.cash
 
-![New block explorer](https://cdn.discordapp.com/attachments/363789627976581122/430699191430414337/be.png)
+**To devellop locally : you can spawn a local webserver and use and allow CORS (Cross origin ressource sharing) in your browser**
+
+ * Safari : Show development menu in menubar and disable multi origin restrictions
+ * Chrome : https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi
+
+
+![New block explorer](https://cdn.discordapp.com/attachments/403614252415451156/430861467278114836/bx.png)
 
 ## task list
 
@@ -12,9 +18,7 @@ Available here : https://explorer.beta.ird.cash
   * [x] total transactions
   * [x] show tx in mempool
   * [x] show last found blocks
-  * [ ] price in usd
-  * [ ] price in eur
-  * [ ] price in btc
+  * [x] price in usd/eur/btc
   * [ ] small difficulty graph
   * [ ] search field for blk or tx
   * [ ] add nodes status/versions
@@ -37,3 +41,4 @@ Available here : https://explorer.beta.ird.cash
   
 * block detail
 * tx detail
+ 
