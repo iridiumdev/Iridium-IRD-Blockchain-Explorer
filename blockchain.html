@@ -1,77 +1,189 @@
-blockchain
+<div class="cardpad card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Current mined block height">
+                        <i class="fa fa-bars"></i> Height: <span id="blockchainHeight" data-height="0"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Difficulty of the current mined block">
+                        <i class="fas fa-microchip"></i> Next Difficulty: <span id="nextDifficulty"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Based on the current mined block">
+                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="On the last visible blocks">
+                        <i class="fas fa-percent"></i></i> Average Hash Rate: <span id="averageHashrate"></span>
+                    </span>
+            </div>
+        </div>
 
+    </div>
+    <div class="input-group mb-3 search">
+        <input id="txt_search" class="form-control" placeholder="Search for block number / block hash / hash transaction">
+        <div class="input-group-append">
+            <button id="btn_search" class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="cardpad card">
+    <div class="card-header">
+        Lasts 10 blocks found <span id="nb_blocks"></span>
+    </div>
+    <div id="block_table" class="card-body table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th><i class="fa fa-bars"></i> Height</th>
+                <th><i class="fas fa-microchip"></i> Difficulty</th>
+                <th><i class="fas fa-ellipsis-h"></i> Block Hash</th>
+                <th><i class="far fa-clock"></i> Time found</th>
+                <th><i class="far fa-hdd"></i> Size</th>
+                <th><i class="fas fa-exchange-alt"></i> tx</th>
+            </tr>
+            </thead>
+            <tbody id="blocks_rows">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="text-center">
+    <button type="button" class="btn btn-default invisible" id="loadMoreBlocks">Load More</button>
+</p>
 <script>
+    // Current page handlers (whe should know lastMinedBlockHeader)
     currentPage = {
-        destroy: function(){
+        destroy: function () {
+            if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
+            if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
+
         },
-        init: function(){
-        },
-        update: function(){
+        update: function () {
+            if (parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
+                console.warn('update blockchain.html');
+                $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
+                getCurrentMinedBlock();
+                getBlocks();
+            }
         }
     };
 
-    function getBlocks() {
-        if (xhrGetBlocks) xhrGetBlocks.abort();
-        xhrGetBlocks = $.ajax({
-            url: api,
+    // Current page functions.
+    var xhrGetCurrentMinedBlock;
+
+    // get last block template (current mining block)
+    function getCurrentMinedBlock() {
+        if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
+        xhrGetCurrentMinedBlock = $.ajax({
+            url: api + '/json_rpc',
             method: "POST",
             data: JSON.stringify({
                 jsonrpc: "2.0",
-                id: "4",
-                method: "f_blocks_list_json",
+                id: "2",
+                method: "getblocktemplate",
                 params: {
-                    height: lastBlock.block_header.height
+                    reserve_size: 0,
+                    wallet_address: "ir3AmNVgaquFesnDNNBkZMGa8vqHhwvqX4JHKuHFj9DQSwDsr4kNunrWhXs1eG34PnDWx7cbn8nJ9bN2gnHC99eA1kceFnJ1k"
                 }
             }),
             dataType: 'json',
             cache: 'false'
         })
             .done(function (data) {
-                // todo : check result.status OK
-                // todo add reward in f_blocks_list_json method
-                blocksList = data.result.blocks;
-                currentPage.update_block_list();
+                if (data.hasOwnProperty('result')) {
+                    currentMinedBlock = data.result;
+                    // console.warn(currentMinedBlock);
+                    updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
+                    updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
+                    updateText('blockchainHeight', currentMinedBlock.height);
+                } else {
+                    updateText('alert_text', data.error.message);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetCurrentMinedBlock, textStatus) {
+                updateText('alert_text', 'An error occured : ' + textStatus);
+                $('.alert_wrapper').removeClass('invisible');
+                $('#loading').hide();
             });
     }
 
-    function getBlockRowElement(block, jsonString) {
+    var xhrGetLastBlocks;
 
-        var row = document.createElement('tr');
-        row.setAttribute('data-json', jsonString);
-        row.setAttribute('data-height', block.height);
-        row.setAttribute('id', 'blockRow' + block.height);
-        row.setAttribute('title', block.hash);
-
-        var columns =
-            '<td>' + block.height + '</td>' +
-            '<td>' + block.difficulty + '</td>' +
-            '<td>' + formatBlockLink(block.hash) + '</td>' +
-            '<td>' + formatDate(block.timestamp) + '</td>' +
-            '<td>' + 'reward' + '</td>' +
-            '<td>' + block.cumul_size + '</td>' +
-            '<td>' + block.tx_count + '</td>';
-
-        row.innerHTML = columns;
-
-        return row;
+    // Get last 31 blocks
+    function getBlocks() {
+        if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
+        xhrGetLastBlocks = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "4",
+                method: "f_blocks_list_json",
+                params: {
+                    height: lastMinedBlockHeader.block_header.height
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                if (data.hasOwnProperty('result')) {
+                    lastBlocksList = data.result.blocks;
+                    renderBlocks(lastBlocksList);
+                    $('#loading').hide();
+                } else {
+                    updateText('alert_text', data.error.message);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetLastBlocks, textStatus) {
+                updateText('alert_text', 'An error occured : ' + textStatus);
+                $('.alert_wrapper').removeClass('invisible');
+                $('#loading').hide();
+            });
     }
 
-    function renderBlocks(blocksList) {
+    // Handle Blocks list
+
+    function renderBlocks(blocksResults){
+
         var $blocksRows = $('#blocks_rows');
-        for (var i = 0; i < blocksList.length; i++) {
-            var block = blocksList[i];
+        var sumDiff = 0;
+        for (var i = 0; i < blocksResults.length; i ++){
+            sumDiff += blocksResults[i].difficulty;
+            var block = blocksResults[i];
             var blockJson = JSON.stringify(block);
             var existingRow = document.getElementById('blockRow' + block.height);
-            if (existingRow && existingRow.getAttribute('data-json') !== blockJson) {
+            // console.warn('existingRow : ' + existingRow + ' i : ' + i);
+            if (existingRow && existingRow.getAttribute('data-json') !== blockJson){
+
                 $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
             }
-            else if (!existingRow) {
+            else if (!existingRow){
                 var blockElement = getBlockRowElement(block, blockJson);
+
                 var inserted = false;
                 var rows = $blocksRows.children().get();
                 for (var f = 0; f < rows.length; f++) {
                     var bHeight = parseInt(rows[f].getAttribute('data-height'));
-                    if (bHeight < block.height) {
+                    if (bHeight < block.height){
                         inserted = true;
                         $(rows[f]).before(blockElement);
                         break;
@@ -81,5 +193,25 @@ blockchain
                     $blocksRows.append(blockElement);
             }
         }
+        averageHashRate = sumDiff / 31;
+        updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
+        $('#loadMoreBlocks').removeClass('invisible');
     }
+
+    function getBlockRowElement(block) {
+        var row = document.createElement('tr');
+        var columns =
+            '<td>' + block.height + '</td>' +
+            '<td>' + block.difficulty + '</td>' +
+            '<td>' + formatBlockLink(block.hash) + '</td>' +
+            '<td>' + formatDate(block.timestamp) + '</td>' +
+            '<td>' + block.cumul_size + '</td>' +
+            '<td>' + block.tx_count + '</td>';
+        row.innerHTML = columns;
+        return row;
+    }
+    // enable popover
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({})
+    });
 </script>

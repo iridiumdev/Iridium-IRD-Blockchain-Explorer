@@ -5,6 +5,13 @@ html {
     min-height: 100%;
 }
 
+.coinlib{
+    width: 100%;
+    height: auto;
+    /*border: black 1px solid;*/
+    border:none;
+}
+
 .navbar-brand {
     font-size: 15px;
 }
@@ -30,17 +37,21 @@ html {
     left:-50%;
 }
 
-.alert_wrapper{
-    position:fixed;
-    left:50%;
-    top: 50px;
-    width: 90%;
+.alert_wrapper {
+    position: fixed;
+    left: 50%;
+    top: 90px;
+    width: 100%;
 }
+
 
 .alert_wrapper #alert{
     position:relative;
-    width: 90%;
-    left:-50%;
+    width: 50%;
+    left:-25%;
+    height: 90px;
+    padding: 30px;
+    font-weight: bold;
 }
 
 #tx_table {
@@ -50,7 +61,7 @@ html {
 
 #block_table {
     padding: 0;
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 .wrapper #loading{
     position:relative;
@@ -67,6 +78,10 @@ html {
     height: 45px;
     margin-top: -28px;
 }
+.popover {
+    font-size: 0.75em;
+}
+
 a {
     color: #EC6D00;
 }
@@ -124,31 +139,10 @@ body {
     margin-bottom: 50px;
     margin-top: 60px;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    font-family: 'Roboto Condensed', sans-serif;
-}
-h3,
-.h3 {
-    font-size: 32px;
-    margin-bottom: 14px;
-}
-h4,
-.h4 {
-    font-size: 24px;
-    margin-bottom: 14px;
+
+h2 {
+    font-size: 18px;
+    margin: 0;
 }
 .navbar-dark {
     background-color: #000000;
@@ -157,6 +151,9 @@ h4,
     /*height: 34px;*/
 }
 
+.search{
+    padding: 10px;
+}
 
 hr {
     border-top-color: #BBBBBB;
@@ -212,10 +209,23 @@ hr {
     color: #fff;
     border-color: #4E6A75;
 }
+.btn-close {
+    color: #000000;
+    font-size: 2em;
+    float: right;
+}
+
+.btn-close:hover,
+.btn-close:focus,
+.btn-close:active {
+    color: #ffffff;
+}
+
 .btn-default {
     color: #ffffff;
     background-color: #4E6A75;
     border-color: #4E6A75;
+    margin-top: 10px;
 }
 .btn-default:hover,
 .btn-default:focus,
@@ -311,76 +321,7 @@ code {
 .table > tbody > tr > td {
     border-top-color: #c9e0e9;
 }
-/************************************************
-*** charts ***
-************************************************/
-.chartsPoolStat {
-    padding-top: 30px;
-}
 
-.chartWrap {
-    display: none;
-}
-
-.userChart .chart,
-.chartWrap .chart {
-    margin-bottom: 10px;
-}
-.userChart h4,
-.chartWrap h4 {
-    text-align: center;
-    font-size: 21px;
-}
-.userChart {
-    display: none;
-}
-.chartWrap p span {
-    color: #F8FBDC;
-}
-/************************************************
-*** sparkline override ***
-************************************************/
-.jqstooltip {
-    border: none !important;
-    background: rgba(0, 0, 0, 0.8) !important;
-    border-radius: 2px !important;
-    margin-top: -20px !important;
-    /* Override Bootstrap defaults to fix jQuery.Sparkline tooltips appearance */
-    -webkit-box-sizing: content-box !important;
-    -moz-box-sizing: content-box;
-    box-sizing: content-box !important;
-}
-.jqstooltip .jqsfield {
-    color: #ccc;
-    font-size: 13px !important;
-}
-.jqstooltip .jqsfield b {
-    color: #fff;
-}
-/************************************************
-*** home page fixes ***
-************************************************/
-#yourAddressDisplay {
-    word-wrap: break-word;
-}
-/************************************************
-*** 20% width block ***
-************************************************/
-.col-sm-20 {
-    position: relative;
-    min-height: 1px;
-    padding-left: 15px;
-    padding-right: 15px;
-}
-@media (min-width: 768px) {
-    .col-sm-20 {
-        float: left;
-        width: 20%;
-    }
-}
-/************************************************
-*** admin page ***
-************************************************/
 .btn-primary {
     color: #ffffff;
     background-color: #BA9B79;
@@ -440,76 +381,21 @@ a.list-group-item:last-child {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
-.adminStats > div {
-    min-height: 127px;
-    color: #2E3D31;
-    position: relative;
-    -webkit-box-shadow: inset 0px 0px 0 1px #ffffff;
-    box-shadow: inset 0px 0px 0 1px #ffffff;
-    background-color: #EBEBEB;
-}
-.adminStats .statValue {
-    position: absolute;
-    display: block;
-    padding: 0 10px;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    line-height: 100px;
-    text-align: center;
-    word-wrap: break-word;
-    font-size: 17px;
-}
-.adminStats .statValue.lead {
-    font-size: 21px;
-    font-weight: 600;
-}
-.adminStats h4 {
-    text-align: right;
-    font-size: 18px;
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    margin: 0;
-    color: #26839B;
-}
-.adminStats .statsTitle h3 {
-    line-height: 127px;
-    margin: 0;
-    color: #00C1FF;
-    text-align: center;
-}
-.usersList {
-    table-layout: fixed;
-    word-wrap: break-word;
-}
-.usersList .tooltip-inner {
-    max-width: 100%;
-}
-.usersList .sort {
-    cursor: pointer;
-}
-.usersList tr > th:first-child {
-    width: 40%;
-}
+
 strong,
 b {
     font-weight: 500;
 }
-.nav-pills > li > a {
-    border-radius: 0;
-    background-color: #F3F3F3;
+.mt-2, .my-2 {
+    margin-top: 0 !important;
 }
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:hover,
-.nav-pills > li.active > a:focus {
-    color: #fff;
-    background-color: #BA9B79;
-}
-.adminMonitor code {
-    white-space: normal;
-}
-.adminMonitor .tab-pane li {
-    margin-bottom: 10px;
-}
+/*.nav-pills > li > a {*/
+    /*border-radius: 0;*/
+    /*background-color: #F3F3F3;*/
+/*}*/
+/*.nav-pills > li.active > a,*/
+/*.nav-pills > li.active > a:hover,*/
+/*.nav-pills > li.active > a:focus {*/
+    /*color: #fff;*/
+    /*background-color: #BA9B79;*/
+/*}*/
