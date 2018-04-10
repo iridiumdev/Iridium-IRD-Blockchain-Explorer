@@ -108,9 +108,11 @@
             })
 
             .fail(function (xhrGetLastMinedBlockHeader, textStatus) {
-                updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
@@ -137,7 +139,6 @@
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
                     lastMinedBlockHeader = data.result;
-                    // console.warn("tick : " + new Date());
                     currentPage.update();
                 } else {
                     updateText('alert_text', data.error.message);
@@ -152,11 +153,12 @@
                 }, 60000);
             })
             .fail(function (xhrFetchLastMinedBlockHeader, textStatus) {
-                updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
-
     }
 
     var xhrPageLoading;
@@ -182,9 +184,11 @@
             })
 
             .fail(function (xhrPageLoading, textStatus) {
-                updateText('alert_text', 'Can\'t find page : ' + page);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'Can\'t find page : ' + page);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 

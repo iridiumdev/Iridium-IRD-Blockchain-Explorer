@@ -84,7 +84,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        Lasts 10 blocks found <span id="nb_blocks"></span>
+        Lasts 10 blocks found
     </div>
     <div id="block_table" class="card-body table-responsive">
         <table class="table table-hover">
@@ -161,9 +161,11 @@
                 }
             })
             .fail(function (xhrGetCurrentMinedBlock, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'An error occured : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
@@ -198,9 +200,11 @@
                 }
             })
             .fail(function (xhrGetLastMinedBlockDetails, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'An error occured : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
@@ -233,9 +237,11 @@
                 }
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'An error occured : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
@@ -301,16 +307,18 @@
                     $('#loading').hide();
                 }
             })
+            .fail(function (xhrGetTxPool, textStatus) {
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'Error getting transactions pool : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
+            })
             .always(function () {
                 txPulse = setTimeout(function () {
                     pulseTxUpdate();
                     getTxPool();
                 }, 25000);
-            })
-            .fail(function (xhrGetTxPool, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
             });
     }
     // Handle transaction pool

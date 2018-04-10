@@ -41,7 +41,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        Lasts 10 blocks found <span id="nb_blocks"></span>
+        Lasts <span id="nb_blocks"></span> blocks found
     </div>
     <div id="block_table" class="card-body table-responsive">
         <table class="table table-hover">
@@ -70,21 +70,19 @@
         destroy: function () {
             if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
-
         },
         update: function () {
             if (parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
-                console.warn('update blockchain.html');
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
-                getBlocks();
+                getBlocks(lastMinedBlockHeader.block_header.height);
             }
         }
     };
 
     // Current page functions.
-    var xhrGetCurrentMinedBlock;
 
+    var xhrGetCurrentMinedBlock;
     // get last block template (current mining block)
     function getCurrentMinedBlock() {
         if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
@@ -106,7 +104,6 @@
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
                     currentMinedBlock = data.result;
-                    // console.warn(currentMinedBlock);
                     updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
@@ -117,16 +114,22 @@
                 }
             })
             .fail(function (xhrGetCurrentMinedBlock, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'While getting current mined block : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
-    var xhrGetLastBlocks;
 
     // Get last 31 blocks
-    function getBlocks() {
+    $('#loadMoreBlocks').click(function() {
+        getBlocks($('#blocks_rows').children().last().data('height'));
+    });
+
+    var xhrGetLastBlocks;
+    function getBlocks(heightAsked) {
         if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
         xhrGetLastBlocks = $.ajax({
             url: api + '/json_rpc',
@@ -136,7 +139,7 @@
                 id: "4",
                 method: "f_blocks_list_json",
                 params: {
-                    height: lastMinedBlockHeader.block_header.height
+                    height:heightAsked
                 }
             }),
             dataType: 'json',
@@ -154,35 +157,34 @@
                 }
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
-                updateText('alert_text', 'An error occured : ' + textStatus);
-                $('.alert_wrapper').removeClass('invisible');
-                $('#loading').hide();
+                if (textStatus != "abort") {
+                    updateText('alert_text', 'While getting last blocs list : ' + textStatus);
+                    $('.alert_wrapper').removeClass('invisible');
+                    $('#loading').hide();
+                }
             });
     }
 
+
     // Handle Blocks list
-
+    var sumDiff = 0;
+    var totalblocks = 0;
     function renderBlocks(blocksResults){
-
-        var $blocksRows = $('#blocks_rows');
-        var sumDiff = 0;
-        for (var i = 0; i < blocksResults.length; i ++){
-            sumDiff += blocksResults[i].difficulty;
-            var block = blocksResults[i];
-            var blockJson = JSON.stringify(block);
-            var existingRow = document.getElementById('blockRow' + block.height);
+        $blocksRows = $('#blocks_rows');
+        for ( i = 0; i < blocksResults.length; i ++){
+            block = blocksResults[i];
+            blockJson = JSON.stringify(block);
+            existingRow = document.getElementById('blockRow' + block.height);
             // console.warn('existingRow : ' + existingRow + ' i : ' + i);
             if (existingRow && existingRow.getAttribute('data-json') !== blockJson){
-
                 $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
             }
             else if (!existingRow){
-                var blockElement = getBlockRowElement(block, blockJson);
-
-                var inserted = false;
-                var rows = $blocksRows.children().get();
-                for (var f = 0; f < rows.length; f++) {
-                    var bHeight = parseInt(rows[f].getAttribute('data-height'));
+                blockElement = getBlockRowElement(block, blockJson);
+                inserted = false;
+                rows = $blocksRows.children().get();
+                for (f = 0; f < rows.length; f++) {
+                    bHeight = parseInt(rows[f].getAttribute('data-height'));
                     if (bHeight < block.height){
                         inserted = true;
                         $(rows[f]).before(blockElement);
@@ -192,15 +194,26 @@
                 if (!inserted)
                     $blocksRows.append(blockElement);
             }
+            totalblocks++;
+            sumDiff += blocksResults[i].difficulty;
         }
-        averageHashRate = sumDiff / 31;
+        console.warn('total blocks loaded :' + totalblocks);
+        console.warn('sumDiff :' + sumDiff);
+        averageHashRate = sumDiff / totalblocks;
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
+        updateText('nb_blocks', totalblocks);
         $('#loadMoreBlocks').removeClass('invisible');
     }
 
-    function getBlockRowElement(block) {
-        var row = document.createElement('tr');
-        var columns =
+    function getBlockRowElement(block,jsonString) {
+
+        row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-height', block.height);
+        row.setAttribute('id', 'blockRow' + block.height);
+        row.setAttribute('title', block.hash);
+
+        columns =
             '<td>' + block.height + '</td>' +
             '<td>' + block.difficulty + '</td>' +
             '<td>' + formatBlockLink(block.hash) + '</td>' +
@@ -210,6 +223,7 @@
         row.innerHTML = columns;
         return row;
     }
+
     // enable popover
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({})
