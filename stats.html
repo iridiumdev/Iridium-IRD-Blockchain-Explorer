@@ -6,6 +6,11 @@ stats
         init: function(){
         },
         update: function(){
+            if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
+
+            } else {
+                getLastMinedBlockHeader();
+            }
         }
     };
 </script>

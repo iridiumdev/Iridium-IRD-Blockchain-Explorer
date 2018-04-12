@@ -1,5 +1,5 @@
 <div class="cardpad card">
-    <div class="card-body">
+    <div class="card-header">
         <div class="row">
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
@@ -26,13 +26,14 @@
                     </span>
             </div>
         </div>
-
     </div>
-    <div class="input-group mb-3 search">
-        <input id="txt_search" class="form-control" placeholder="Search for block number / block hash / hash transaction">
-        <div class="input-group-append">
-            <button id="btn_search" class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i> Search
-            </button>
+    <div class="card-body">
+        <div class="input-group mb-3 search">
+            <input id="txt_search" class="form-control" placeholder="Search for block number / block hash / hash transaction">
+            <div class="input-group-append">
+                <button id="btn_search" class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i> Search
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -51,12 +52,12 @@
                 <th><i class="fas fa-microchip"></i> Difficulty</th>
                 <th><i class="fas fa-ellipsis-h"></i> Block Hash</th>
                 <th><i class="far fa-clock"></i> Time found</th>
+                <th><i class="fas fa-piggy-bank"></i> Reward</th>
                 <th><i class="far fa-hdd"></i> Size</th>
                 <th><i class="fas fa-exchange-alt"></i> tx</th>
             </tr>
             </thead>
             <tbody id="blocks_rows">
-
             </tbody>
         </table>
     </div>
@@ -71,8 +72,11 @@
             if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
         },
+        init: function (){
+            currentPage.update();
+        },
         update: function () {
-            if (parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
+            if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
                 getBlocks(lastMinedBlockHeader.block_header.height);
@@ -108,15 +112,13 @@
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetCurrentMinedBlock, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'While getting current mined block : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Can\'t connect to api : ',textStatus);
                     $('#loading').hide();
                 }
             });
@@ -151,15 +153,13 @@
                     renderBlocks(lastBlocksList);
                     $('#loading').hide();
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'While getting last blocs list : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Can\'t connect to api : ',textStatus);
                     $('#loading').hide();
                 }
             });
@@ -175,7 +175,6 @@
             block = blocksResults[i];
             blockJson = JSON.stringify(block);
             existingRow = document.getElementById('blockRow' + block.height);
-            // console.warn('existingRow : ' + existingRow + ' i : ' + i);
             if (existingRow && existingRow.getAttribute('data-json') !== blockJson){
                 $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
             }
@@ -191,14 +190,13 @@
                         break;
                     }
                 }
-                if (!inserted)
+                if (!inserted) {
+                    totalblocks++;
                     $blocksRows.append(blockElement);
+                }
             }
-            totalblocks++;
             sumDiff += blocksResults[i].difficulty;
         }
-        console.warn('total blocks loaded :' + totalblocks);
-        console.warn('sumDiff :' + sumDiff);
         averageHashRate = sumDiff / totalblocks;
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
         updateText('nb_blocks', totalblocks);
@@ -218,12 +216,98 @@
             '<td>' + block.difficulty + '</td>' +
             '<td>' + formatBlockLink(block.hash) + '</td>' +
             '<td>' + formatDate(block.timestamp) + '</td>' +
+            '<td>' + getReadableCoins(block.reward,2,1) + '</td>' +
             '<td>' + block.cumul_size + '</td>' +
             '<td>' + block.tx_count + '</td>';
         row.innerHTML = columns;
         return row;
     }
 
+    // search
+    $('#btn_search').click(function(e) {
+        console.warn('search !');
+        text = document.getElementById('txt_search').value;
+
+        // by height
+        var xhrGetSearchBlockbyHeight;
+        function GetSearchBlockbyHeight() {
+            if (xhrGetSearchBlockbyHeight) xhrGetSearchBlockbyHeight.abort();
+            xhrGetSearchBlockbyHeight = $.ajax({
+                url: api + '/json_rpc',
+                method: "POST",
+                data: JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: "blockbyheight",
+                    method: "getblockheaderbyheight",
+                    params: {
+                        height: parseInt(text)
+                    }
+                }),
+                dataType: 'json',
+                cache: 'false'
+            })
+                .done(function (data) {
+                    console.log(data);
+                    if (data.hasOwnProperty('result')) {
+                        console.log(data);
+                        block = data.result.block_header;
+                        window.location.href = getBlockchainUrl(block.hash);
+                    } else {
+                        showalert('alert-danger','Core error : ',data.error.message);
+                        $('#loading').hide();
+                    }
+                })
+                .fail(function (xhrGetLastBlocks, textStatus) {
+                    if (textStatus != "abort") {
+                        showalert('alert-danger','Can\'t connect to api : ',textStatus);
+                        $('#loading').hide();
+                    }
+                });
+        }
+
+        // by hash
+        function GetSearchBlock(){
+            var block, xhrGetSearchBlock;
+            if (xhrGetSearchBlock) xhrGetSearchBlock.abort();
+            xhrGetSearchBlock = $.ajax({
+                url: api_blockexplorer + '/json_rpc',
+                method: "POST",
+                data: JSON.stringify({
+                    jsonrpc:"2.0",
+                    id: "GetSearchBlock",
+                    method:"f_block_json",
+                    params: {
+                        hash: text // document.getElementById('txt_search').value // $('#txt_search').attr('value')
+                    }
+                }),
+                dataType: 'json',
+                cache: 'false',
+                success: function(data){
+                    if(data.result){
+                        block = data.result.block;
+                        window.location.href = getBlockchainUrl(block.hash);
+                    } else if(data.error) {
+                        window.location.href = transactionExplorer.replace('{id}', text);
+                    }
+                }
+            });
+        }
+
+        // height detected
+        if ( text.length < 64 ) {
+            GetSearchBlockbyHeight();
+        }
+        // hash detected
+        if ( text.length == 64 ) {
+            GetSearchBlock();
+        }
+        e.preventDefault();
+    });
+    // enable enter key to search
+    $('#txt_search').keyup(function(e){
+        if(e.keyCode === 13)
+            $('#btn_search').click();
+    });
     // enable popover
     $(document).ready(function () {
         $('[data-toggle="popover"]').popover({})

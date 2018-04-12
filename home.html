@@ -113,10 +113,15 @@
             if (xhrGetLastMinedBlockDetails) xhrGetLastMinedBlockDetails.abort();
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
             if (xhrGetTxPool) xhrGetTxPool.abort();
-            clearTimeout(txPulse);
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
+        },
+        init: function (){
+            currentPage.update();
         },
         update: function () {
-            if (parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
+            if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 updateText('networkLastReward', getReadableCoins(lastMinedBlockHeader.block_header.reward, 2));
                 getCurrentMinedBlock();
@@ -150,20 +155,17 @@
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
                     currentMinedBlock = data.result;
-                    // console.warn(currentMinedBlock);
                     updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetCurrentMinedBlock, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'An error occured : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
                 }
             });
@@ -194,15 +196,13 @@
                     updateText('supplypercent', (lastMinedBlockDetails.block.alreadyGeneratedCoins / 25000000000000).toFixed(2) + ' %');
                     updateText('alreadyGeneratedTransactions', shortenLargeNumber(lastMinedBlockDetails.block.alreadyGeneratedTransactions, 3, 1));
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetLastMinedBlockDetails, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'An error occured : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
                 }
             });
@@ -231,15 +231,13 @@
                     lastBlocksList = data.result.blocks;
                     renderBlocks(lastBlocksList);
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'An error occured : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
                 }
             });
@@ -302,15 +300,13 @@
                         $('#tx_table').addClass('d-none');
                     }
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
             })
             .fail(function (xhrGetTxPool, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'Error getting transactions pool : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger','Request error : ',textStatus);
                     $('#loading').hide();
                 }
             })
@@ -318,7 +314,7 @@
                 txPulse = setTimeout(function () {
                     pulseTxUpdate();
                     getTxPool();
-                }, 25000);
+                }, 5000);
             });
     }
     // Handle transaction pool

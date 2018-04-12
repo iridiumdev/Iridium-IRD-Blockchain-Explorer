@@ -1,0 +1,242 @@
+<div class="cardpad card">
+    <div class="card-header">
+        <h3>Block
+            <small id="block.hash"></small>
+        </h3>
+    </div>
+    <div class="card-body">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="cardpad card">
+                <div class="card-header">
+                    <h2>Block status</h2>
+                </div>
+                <div class="card-body">
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="block height">
+                        <i class="fa fa-bars"></i> Height: <span id="block.height" data-height="0"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block discover time">
+                        <i class="far fa-clock"></i> Timestamp: <span id="block.timestamp"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block difficulty">
+                        <i class="fas fa-microchip"></i> Difficulty: <span id="block.difficulty"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Orphaned blocks does not enter in blockchain">
+                        <i class="fas fa-band-aid"></i> Orphan: <span id="block.orphan"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Version of the block">
+                    <i class="fas fa-code-branch"></i> Block version: <span id="block.version"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Number of transactions this block contain">
+                        <i class="fas fa-exchange-alt"></i> Transactions: <span id="block.transactions"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Total fee for this block">
+                        <i class="fas fa-donate"></i> Transactions fee: <span id="block.transactionsFee"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block reward">
+                        <i class="fas fa-piggy-bank"></i> Reward: <span id="block.reward"></span>
+                    </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="cardpad card">
+                <div class="card-header">
+                    <h2>Block informations</h2>
+                </div>
+                <div class="card-body">
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Total size of transactions">
+                        <i class="far fa-hdd"></i> Total transactions size: <span id="block.transactionsSize"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Size of this block">
+                        <i class="far fa-hdd"></i> Total block size: <span id="block.blockSize"></span>
+                    </span>
+                    </p>
+
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Median size of transactions">
+                    <i class="far fa-hdd"></i> Current txs median: <span id="block.currentTxsMedian"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Effective transaction median">
+                        <i class="far fa-hdd"></i> Effective txs median: <span id="block.effectiveTxsMedian"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block reward penalty">
+                        <i class="fas fa-exclamation-circle"></i> Reward penalty: <span id="block.rewardPenalty"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block base reward">
+                        <i class="fas fa-piggy-bank"></i> Base Reward: <span id="block.baseReward"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Already mined coins">
+                        <i class="far fa-money-bill-alt"></i> Total coins in the network: <span id="block.totalCoins"></span>
+                    </span>
+                    </p>
+                    <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Already transactions done">
+                    <i class="fas fa-exchange-alt"></i> Total transactions: <span
+                            id="block.totalTransactions"></span>
+                    </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="cardpad card">
+            <div class="card-header">
+                <span id="nb_tx"></span>
+            </div>
+            <div id="tx_table" class="card-body table-responsive d-none">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th><i class="fas fa-ellipsis-h"></i> Transaction hash</th>
+                        <th><i class="fas fa-donate"></i> Fee</th>
+                        <th><i class="fas fa-dollar-sign"></i> Total Amount</th>
+                        <th><i class="far fa-hdd"></i> Size</th>
+                    </tr>
+                    </thead>
+                    <tbody id="transactions_rows">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    currentPage = {
+        destroy: function(){
+        },
+        init: function (){
+            getBlock();
+        },
+        update: function(){
+        }
+    };
+
+    var xhrGetBlock;
+    function getBlock() {
+        console.log(urlParam('hash'));
+        if (xhrGetBlock) xhrGetBlock.abort();
+        xhrGetBlock = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "5",
+                method: "f_block_json",
+                params: {
+                    hash: urlParam('hash')
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                if (data.hasOwnProperty('result')) {
+                    block = data.result.block;
+                    updateText('block.hash', block.hash);
+                    updateText('block.height', block.height);
+                    updateText('block.timestamp', formatDate(block.timestamp));
+                    updateText('block.difficulty', block.difficulty);
+                    updateText('block.orphan', block.orphan_status ? "yes" : "no");
+                    updateText('block.version', block.major_version + '.' + block.minor_version);
+                    updateText('block.transactions', block.transactions.length);
+                    updateText('block.transactionsSize', shortenLargeNumber(block.transactionsCumulativeSize, 2, 1) + 'B');
+                    updateText('block.blockSize', shortenLargeNumber(block.blockSize, 2, 1) + 'B');
+                    updateText('block.currentTxsMedian', shortenLargeNumber(block.sizeMedian, 2, 1) + 'B');
+                    updateText('block.effectiveTxsMedian', shortenLargeNumber(block.effectiveSizeMedian, 2, 1) + 'B');
+                    updateText('block.rewardPenalty', block.penalty + "%");
+                    updateText('block.baseReward', getReadableCoins(block.baseReward, 2));
+                    updateText('block.transactionsFee', getReadableCoins(block.totalFeeAmount, 5));
+                    updateText('block.reward', getReadableCoins(block.reward, 2));
+                    updateText('block.totalCoins', shortenLargeNumber(block.alreadyGeneratedCoins / coinUnits, 6, 0));
+                    updateText('block.totalTransactions', shortenLargeNumber(block.alreadyGeneratedTransactions, 3, 1));
+                    updateText('nb_tx', block.transactions.length.toString() + ' transaction' + (block.transactions.length > 1 ? 's' : '') + ' in block');
+                    if (block.transactions.length > 0) {
+                        renderTransactions(block.transactions);
+                        $('#tx_table').removeClass('d-none');
+                    } else {
+                        $('#tx_table').addClass('d-none');
+                    }
+                    $('#loading').hide();
+                } else {
+                    showalert('alert-danger', 'Core error : ', data.error.message);
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetBlock, textStatus) {
+                if (textStatus != "abort") {
+                    showalert('alert-danger', 'Can\'t connect to api : ', textStatus);
+                    $('#loading').hide();
+                }
+            });
+    }
+
+    // Handle transaction list
+    function getTransactionCells(transaction) {
+        return '<td>' + formatPaymentLink(transaction.hash) + '</td>' +
+            '<td>' + getReadableCoins(transaction.fee, 5, true) + '</td>' +
+            '<td>' + getReadableCoins(transaction.amount_out, 2, false) + '</td>' +
+            '<td>' + shortenLargeNumber(transaction.size, 2, 1) + 'B' + '</td>';
+    }
+
+    function getTransactionRowElement(transaction) {
+        var row = document.createElement('tr');
+        row.innerHTML = getTransactionCells(transaction);
+        return row;
+    }
+    function renderTransactions(transactionResults){
+        for (i = 0; i < transactionResults.length; i++){
+            transactionElement = getTransactionRowElement(transactionResults[i]);
+            $('#transactions_rows').append(transactionElement);
+        }
+    }
+    // enable popover
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+        })
+    });
+</script>

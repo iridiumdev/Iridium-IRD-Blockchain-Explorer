@@ -40,7 +40,8 @@
                             class="fa fa-cubes"></i> Blockchain</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link hot_link" href="#market" data-page="market.html"><i class="fas fa-th-list"></i> Market</a>
+                    <a class="nav-link hot_link" href="#market" data-page="market.html"><i class="fas fa-th-list"></i>
+                        Market</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
@@ -49,8 +50,17 @@
                     <a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>
                         Statistics</a>
                 </li>
+                <li style="display:none;">
+                    <a class="hot_link" href="#block" data-page="block.html">block
+                    </a>
+                </li>
+
+                <li style="display:none;">
+                    <a class="hot_link" href="#transaction" data-page="transaction.html" >transaction
+                    </a>
+                </li>
             </ul>
-            <div id="stats_updated"><i  class="fas fa-sync fa-spin"></i></div>
+            <div id="stats_updated"><i class="fas fa-sync fa-spin"></i></div>
         </div>
     </nav>
 </header>
@@ -58,12 +68,6 @@
     <div id="page"></div>
     <div class="wrapper">
         <p id="loading"><i class="fas fa-sync fa-spin"></i></p>
-    </div>
-    <div class="alert_wrapper invisible">
-        <div id="alert" class="alert alert-danger fade show" role="alert">
-            <span class="btn-close"><i class="fas fa-times-circle"></i></span>
-            <strong>An error occurs : </strong><br><span id="alert_text"></span>
-        </div>
     </div>
 </div>
 <footer>
@@ -73,9 +77,12 @@
         open sourced under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a>
     </div>
 </footer>
+
+<div class="alert_wrapper"><span id="alert_placeholder"></span></div>
+
 <script>
 
-    $(function() {
+    $(function () {
         getLastMinedBlockHeader();
     });
 
@@ -101,17 +108,16 @@
                     lastMinedBlockHeader = data.result;
                     routePage(fetchLiveLastMinedBlockHeader);
                 } else {
-                    $('.alert_wrapper').removeClass('invisible');
-                    updateText('alert_text', 'Core error : ' + data.error.message);
+                    showalert('alert-danger', 'Core error : ', data.error.message);
                     $('#loading').hide();
                 }
             })
 
             .fail(function (xhrGetLastMinedBlockHeader, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger', 'Can\'t connect to api : ', textStatus);
                     $('#loading').hide();
+                    routePage();
                 }
             });
     }
@@ -141,21 +147,18 @@
                     lastMinedBlockHeader = data.result;
                     currentPage.update();
                 } else {
-                    updateText('alert_text', data.error.message);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger', 'Core error : ', data.error.message);
                     $('#loading').hide();
                 }
-
             })
             .always(function () {
                 setTimeout(function () {
-                    fetchLiveLastMinedBlockHeader();
+                    fetchLiveLastMinedBlockHeader()
                 }, 60000);
             })
             .fail(function (xhrFetchLastMinedBlockHeader, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'Can\'t connect to api : ' + textStatus);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger', 'Can\'t connect to api : ', textStatus);
                     $('#loading').hide();
                 }
             });
@@ -163,6 +166,7 @@
 
     var xhrPageLoading;
     var currentPage;
+
     // page router
     function routePage(loadedCallback) {
         if (currentPage) currentPage.destroy();
@@ -170,23 +174,21 @@
         $('#loading').show();
         if (xhrPageLoading) xhrPageLoading.abort();
         $('.hot_link').parent().removeClass('active');
-        var $link = $('a.hot_link[href="' + (window.location.hash || '#') + '"]');
+        $link = $('a.hot_link[href="' + (window.location.hash || '#') + '"]');
         $link.parent().addClass('active');
-        var page = $link.data('page');
+        page = $link.data('page');
         xhrPageLoading = $.ajax({
             url: page,
             cache: false
         })
             .done(function (data) {
                 $('#page').show().html(data);
-                currentPage.update();
+                currentPage.init();
                 if (loadedCallback) loadedCallback();
             })
-
             .fail(function (xhrPageLoading, textStatus) {
                 if (textStatus != "abort") {
-                    updateText('alert_text', 'Can\'t find page : ' + page);
-                    $('.alert_wrapper').removeClass('invisible');
+                    showalert('alert-danger', 'Can\'t find page : ', page);
                     $('#loading').hide();
                 }
             });
@@ -248,23 +250,52 @@
         return num + (withoutSymbol ? '' : (' ' + symbol));
     }
 
-    function formatBlockLink(hash) {
-        return '<a href="' + getBlockchainUrl(hash) + '">' + hash + '</a>';
-    }
-
     function formatDate(time) {
         if (!time) return '';
         return new Date(parseInt(time) * 1000).toLocaleString();
     }
 
     function getBlockchainUrl(id) {
-        return blockchainExplorer.replace('{symbol}', symbol.toLowerCase()).replace('{id}', id);
+        return blockchainExplorer.replace('{id}', id);
     }
-    // alert close button
-    $('.btn-close').click(function () {
-        $('.alert_wrapper').addClass('invisible');
-    });
 
+    function formatBlockLink(hash) {
+        return '<a href="' + getBlockchainUrl(hash) + '">' + hash + '</a>';
+    }
+
+    function getTransactionUrl(id) {
+        return transactionExplorer.replace('{id}', id);
+    }
+
+    function formatPaymentLink(hash){
+        return '<a href="' + getTransactionUrl(hash) + '">' + hash + '</a>';
+    }
+
+    urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        if (results==null){
+            return null;
+        } else {
+            return results[1] || 0;
+        }
+    }
+
+    // trigger an alert
+    function showalert(alerttype, title, message) {
+        $('#alert_placeholder').append('<div class="alert ' + alerttype + ' alert-dismissible fade show" role="alert">' +
+            '<h2>' + title + '</h2><br>' + message +
+            '<span class="close" data-dismiss="alert" aria-label="Close""><i class="fas fa-times-circle"></i></span>' +
+            '</div>').show();
+
+        // $('#alert_placeholder').show();
+        setTimeout(function () {
+            $(".alert").fadeOut("slow");
+        }, 4000);
+        setTimeout(function () {
+            $(".alert").remove();
+            $('#alert_placeholder').hide();
+        }, 5000);
+    }
 </script>
 </body>
 </html>

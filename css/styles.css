@@ -44,14 +44,14 @@ html {
     width: 100%;
 }
 
-
-.alert_wrapper #alert{
-    position:relative;
+#alert_placeholder{
+    position:absolute;
     width: 50%;
     left:-25%;
     height: 90px;
     padding: 30px;
     font-weight: bold;
+    display: none;
 }
 
 #tx_table {
@@ -382,10 +382,6 @@ a.list-group-item:last-child {
     border-bottom-left-radius: 0;
 }
 
-strong,
-b {
-    font-weight: 500;
-}
 .mt-2, .my-2 {
     margin-top: 0 !important;
 }
