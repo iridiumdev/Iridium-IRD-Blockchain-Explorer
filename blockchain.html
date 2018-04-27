@@ -52,7 +52,6 @@
                 <th><i class="fas fa-microchip"></i> Difficulty</th>
                 <th><i class="fas fa-ellipsis-h"></i> Block Hash</th>
                 <th><i class="far fa-clock"></i> Time found</th>
-                <th><i class="fas fa-piggy-bank"></i> Reward</th>
                 <th><i class="far fa-hdd"></i> Size</th>
                 <th><i class="fas fa-exchange-alt"></i> tx</th>
             </tr>
@@ -216,7 +215,6 @@
             '<td>' + block.difficulty + '</td>' +
             '<td>' + formatBlockLink(block.hash) + '</td>' +
             '<td>' + formatDate(block.timestamp) + '</td>' +
-            '<td>' + getReadableCoins(block.reward,2,1) + '</td>' +
             '<td>' + block.cumul_size + '</td>' +
             '<td>' + block.tx_count + '</td>';
         row.innerHTML = columns;
@@ -270,7 +268,7 @@
             var block, xhrGetSearchBlock;
             if (xhrGetSearchBlock) xhrGetSearchBlock.abort();
             xhrGetSearchBlock = $.ajax({
-                url: api_blockexplorer + '/json_rpc',
+                url: api + '/json_rpc',
                 method: "POST",
                 data: JSON.stringify({
                     jsonrpc:"2.0",

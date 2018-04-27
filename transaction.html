@@ -1,6 +1,132 @@
-pools
+<div class="cardpad card">
+    <div class="card-header">
+        <h2>Transaction <small id="transaction.hash"></small></h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="cardpad card">
+                    <div class="card-header">
+                        <h3>Transaction status</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="transaction fee">
+                        <i class="fas fa-donate"></i> Fee: <span id="transaction.fee"></span>
+                    </span>
+                        </p>
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Sum of amounts">
+                        <i class="fas fa-dollar-sign"></i> Sum of outputs: <span id="transaction.amount_out"></span>
+                    </span>
+                        </p>
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Transaction size">
+                        <i class="far fa-hdd"></i> Size: <span id="transaction.size"></span>
+                    </span>
+                        </p>
+                        <p id="div_transaction_paymentId">
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Transaction payment ID">
+                        <i class="fas fa-id-badge"></i> Payment ID: <span id="transaction.paymentId"></span>
+                    </span>
+                        </p>
+                        <p id="div_transaction_mixin">
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Transaction mixin">
+                    <i class="fas fa-random"></i> Mixin count: <span id="transaction.mixin"></span>
+                    </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="cardpad card">
+                    <div class="card-header">
+                        <h3>From Block</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block hash">
+                        <i class="fas fa-ellipsis-h"></i> Hash: <span id="block.hash"></span>
+                    </span>
+                        </p>
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block height">
+                        <i class="fa fa-bars"></i> Height: <span id="block.height"></span>
+                    </span>
+                        </p>
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Block timestamp">
+                    <i class="far fa-clock"></i> Timestamp: <span id="block.timestamp"></span>
+                    </span>
+                        </p>
+                        <p>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                          data-content="Confirmation">
+                    <i class="fas fa-check"></i> Confirmation: <span id="block.confirm"></span>
+                    </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="cardpad card">
+                    <div class="card-header">
+                        <h3>Inputs</h3>
+                    </div>
+                    <div id="tx_table" class="card-body table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th><i class="far fa-money-bill-alt"></i> Amount</th>
+                                <th><i class="far fa-image"></i> Image</th>
+                            </tr>
+                            </thead>
+                            <tbody id="inputs_rows">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="cardpad card">
+                    <div class="card-header">
+                        <h3>Outputs</h3>
+                    </div>
+                    <div id="tx_table" class="card-body table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                            <tr>
+                                <th><i class="far fa-money-bill-alt"></i> Amount</th>
+                                <th><i class="fas fa-key"></i> Key</th>
+                            </tr>
+                            </tr>
+                            </thead>
+                            <tbody id="outputs_rows">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     currentPage = {
+        init: function (){
+            renderTransaction();
+        },
         destroy: function(){
         },
         update: function(){
@@ -9,4 +135,127 @@ pools
             }
         }
     };
+
+    var xhrGetTransaction;
+    function renderTransaction(){
+        if (xhrGetTransaction) xhrGetTransaction.abort();
+        xhrGetTransaction = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "test",
+                method: "f_transaction_json",
+                params: {
+                    hash: urlParam('hash')
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+
+                if (data.hasOwnProperty('result')) {
+                    transaction = data.result.txDetails;
+                    inputs = data.result.tx.vin;
+                    outputs = data.result.tx.vout;
+                    block = data.result.block;
+                    updateText('transaction.hash', transaction.hash);
+                    updateText('transaction.amount_out',getReadableCoins(transaction.amount_out, 4, false));
+                    updateText('transaction.fee', getReadableCoins(transaction.fee, 4, true));
+                    if (!transaction.mixin)
+                        $('#div_transaction_mixin').hide();
+                    updateText('transaction.mixin', transaction.mixin);
+                    if (!transaction.paymentId)
+                        $('#div_transaction_paymentId').hide();
+                    updateText('transaction.paymentId', transaction.paymentId);
+                    updateText('transaction.size', transaction.size);
+                    //
+                    updateTextLinkable('block.hash', formatBlockLink(block.hash));
+                    updateText('block.height', block.height);
+                    updateText('block.timestamp', formatDate(block.timestamp));
+                    updateText('block.height', block.height);
+                    renderInputs(inputs);
+                    renderOutputs(outputs);
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetBlock, textStatus) {
+                if (textStatus != "abort") {
+                    showalert('alert-danger', 'Can\'t connect to api : ', textStatus);
+                    $('#loading').hide();
+                }
+            });
+    }
+
+    function getInputCells(input){
+        return '<td>' + getReadableCoins(input.value.amount) + '</td>' +
+            '<td>' + input.value.k_image + '</td>';
+    }
+
+
+    function getInputRowElement(input, jsonString){
+        var row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-k_image', input.value.k_image);
+        row.setAttribute('id', 'inputRow' + input.value.k_image);
+        row.innerHTML = getInputCells(input);
+        return row;
+    }
+
+    function renderInputs(inputResults){
+        var $inputsRows = $('#inputs_rows');
+        for (var i = 0; i < inputResults.length; i++){
+            var input = inputResults[i];
+            if (!input.value.amount)
+                continue;
+            var inputJson = JSON.stringify(input);
+            var existingRow = document.getElementById('inputRow' + input.value.k_image);
+            if (existingRow && existingRow.getAttribute('data-json') !== inputJson){
+                $(existingRow).replaceWith(getInputRowElement(input, inputJson));
+            }
+            else if (!existingRow){
+                var inputElement = getInputRowElement(input, inputJson);
+                $inputsRows.append(inputElement);
+            }
+        }
+    }
+
+    function getOutputCells(output){
+        return '<td>' + getReadableCoins(output.amount) + '</td>' +
+            '<td>' + output.target.data.key + '</td>';
+    }
+
+
+    function getOutputRowElement(output, jsonString){
+        var row = document.createElement('tr');
+        row.setAttribute('data-json', jsonString);
+        row.setAttribute('data-k_image', output.target.data.key);
+        row.setAttribute('id', 'outputRow' + output.target.data.key);
+        row.innerHTML = getOutputCells(output);
+        return row;
+    }
+
+    function renderOutputs(outputResults){
+        var $outputsRows = $('#outputs_rows');
+        for (var i = 0; i < outputResults.length; i++){
+            var output = outputResults[i];
+            var outputJson = JSON.stringify(output);
+            var existingRow = document.getElementById('outputRow' + output.target.data.key);
+            if (existingRow && existingRow.getAttribute('data-json') !== outputJson){
+                $(existingRow).replaceWith(getOutputRowElement(output, outputJson));
+            }
+            else if (!existingRow){
+                var outputElement = getOutputRowElement(output, outputJson);
+                $outputsRows.append(outputElement);
+            }
+        }
+    }
+
+    // enable popover
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover({
+        })
+    });
+
 </script>

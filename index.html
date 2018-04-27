@@ -152,7 +152,7 @@
                 }
             })
             .always(function () {
-                setTimeout(function () {
+                refreshAll = setTimeout(function () {
                     fetchLiveLastMinedBlockHeader()
                 }, 60000);
             })
@@ -211,6 +211,14 @@
         var el = document.getElementById(e);
         if (el.textContent !== t) {
             el.textContent = t;
+        }
+        return el;
+    }
+
+    function updateTextLinkable(elementId, text){
+        var el = document.getElementById(elementId);
+        if (el.innerHTML !== text){
+            el.innerHTML = text;
         }
         return el;
     }
