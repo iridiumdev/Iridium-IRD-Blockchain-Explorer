@@ -17,17 +17,30 @@ This is the next version of the iridium block explorer, network status and pool 
   * [x] total emission with percentage
   * [x] total transactions
   * [x] show tx in mempool
+  * [ ] tx in mempool detail
   * [x] show last found blocks
   * [x] price in usd/eur/btc
-  * [ ] small difficulty graph
-  * [ ] search field for blk or tx
+  * [ ] small difficulty graph for last 31 blocks
+  * [x] search field for blk or tx
+  * [ ] search by payment ID
   * [ ] add nodes status/versions
-  * [ ] rich list
+  * [ ] remove url variable
 
 * blockchain
-  * [ ] search field
-  * [ ] last 30 blocks list
-  * [ ] load more
+  * [x] search field
+  * [ ] search by payment ID
+  * [x] last 31 blocks list
+  * [x] load more
+  * [ ] next/previous page
+  
+* block detail
+  * [x] show block detail
+  * [ ] modal window
+  * [ ] next/previous block
+  
+* tx detail
+  * [x] show tx detail
+  * [ ] modal window
   
 * pools
   * [ ] pools list
@@ -37,8 +50,9 @@ This is the next version of the iridium block explorer, network status and pool 
 
 * stats
   * [ ] Difficulty graph
-  * [ ] "Zawy" look graph to see attacks
+  * [ ] emission graph vs theorical
+  * [ ] tx graphs
+  * [ ] "Zawy" look graph
   
-* block detail
-* tx detail
+* world map
  
