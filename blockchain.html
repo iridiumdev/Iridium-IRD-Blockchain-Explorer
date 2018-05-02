@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="card-body">
-        <div class="input-group mb-3 search">
+        <div class="input-group search">
             <input id="txt_search" class="form-control" placeholder="Search for block number / block hash / hash transaction">
             <div class="input-group-append">
                 <button id="btn_search" class="btn btn-outline-secondary" type="button"><i class="fa fa-search"></i> Search
@@ -164,7 +164,6 @@
             });
     }
 
-
     // Handle Blocks list
     var sumDiff = 0;
     var totalblocks = 0;
@@ -247,7 +246,6 @@
                 .done(function (data) {
                     console.log(data);
                     if (data.hasOwnProperty('result')) {
-                        console.log(data);
                         block = data.result.block_header;
                         window.location.href = getBlockchainUrl(block.hash);
                     } else {
