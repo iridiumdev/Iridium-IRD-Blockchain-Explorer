@@ -9,14 +9,14 @@
             </div>
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
-                      data-content="Difficulty of the current mined block">
-                        <i class="fas fa-microchip"></i> Next Difficulty: <span id="nextDifficulty"></span>
+                      data-content="Based on the current mined block">
+                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
                     </span>
             </div>
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
-                      data-content="Based on the current mined block">
-                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                      data-content="Difficulty of the current mined block">
+                        <i class="fas fa-microchip"></i> Next Difficulty: <span id="nextDifficulty"></span>
                     </span>
             </div>
             <div class="col-sm-3">
@@ -37,9 +37,6 @@
         </div>
     </div>
 </div>
-
-
-
 <div class="cardpad card">
     <div class="card-header">
         Lasts <span id="nb_blocks"></span> blocks found
@@ -165,9 +162,9 @@
     }
 
     // Handle Blocks list
-    var sumDiff = 0;
-    var totalblocks = 0;
     function renderBlocks(blocksResults){
+        sumDiff = 0;
+        totalblocks = 0;
         $blocksRows = $('#blocks_rows');
         for ( i = 0; i < blocksResults.length; i ++){
             block = blocksResults[i];

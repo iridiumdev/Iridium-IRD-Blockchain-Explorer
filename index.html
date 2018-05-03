@@ -11,7 +11,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <link href="css/styles.css" rel="stylesheet">
-    <script src="js/config.js"></script>
+    <script src="config.js"></script>
 </head>
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top">
@@ -33,22 +33,21 @@
                     <a class="nav-link hot_link" href="#blockchain" data-page="blockchain.html"><i
                             class="fa fa-cubes"></i> Blockchain</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link hot_link" href="#market" data-page="market.html"><i class="fas fa-th-list"></i>
-                        Market</a>
-                </li>
+                <!--<li class="nav-item">-->
+                    <!--<a class="nav-link hot_link" href="#market" data-page="market.html"><i class="fas fa-th-list"></i>-->
+                        <!--Market</a>-->
+                <!--</li>-->
                 <li class="nav-item">
                     <a class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>
-                        Statistics</a>
-                </li>
+                <!--<li class="nav-item">-->
+                    <!--<a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>-->
+                        <!--Statistics</a>-->
+                <!--</li>-->
                 <li style="display:none;">
                     <a class="hot_link" href="#block" data-page="block.html">block
                     </a>
                 </li>
-
                 <li style="display:none;">
                     <a class="hot_link" href="#transaction" data-page="transaction.html" >transaction
                     </a>
@@ -68,8 +67,7 @@
         class="fab fa-github-square"></i> Iridium explorer</a>
     open sourced under the <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a>
 </footer>
-<div class="alert_wrapper"><span id="alert_placeholder"></span></div>
-
+<div id="alert_placeholder"></div>
 <script>
 
     $(function () {
@@ -78,7 +76,6 @@
 
     // 1 Get last mined block header
     var xhrGetLastMinedBlockHeader;
-
     function getLastMinedBlockHeader() {
         if (xhrGetLastMinedBlockHeader) xhrGetLastMinedBlockHeader.abort();
         xhrGetLastMinedBlockHeader = $.ajax({
@@ -276,9 +273,9 @@
         }
     }
 
-    // trigger an alert
+    // trigger alert
     function showalert(alerttype, title, message) {
-        $('#alert_placeholder').append('<div class="alert ' + alerttype + ' alert-dismissible fade show" role="alert">' +
+        $('#alert_placeholder').append('<div class="alert ' + alerttype + ' alert-dismissible fade show center-block" role="alert">' +
             '<h2>' + title + '</h2><br>' + message +
             '<span class="close" data-dismiss="alert" aria-label="Close""><i class="fas fa-times-circle"></i></span>' +
             '</div>').show();

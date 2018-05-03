@@ -1,12 +1,331 @@
-pools
+<div class="cardpad card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Current mined block height">
+                        <i class="fa fa-bars"></i> Height: <span id="blockchainHeight" data-height="0"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Based on the current mined block">
+                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="Difficulty of the current mined block">
+                        <i class="fas fa-microchip"></i> Next Difficulty: <span id="nextDifficulty"></span>
+                    </span>
+            </div>
+            <div class="col-sm-3">
+                <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                      data-content="On the 31 blocks">
+                        <i class="fas fa-percent"></i></i> Average Hash Rate: <span id="averageHashrate"></span>
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cardpad card">
+    <div class="card-header text-center">
+        <h2>Iridium pools list</h2>
+    </div>
+    <div id="pool_table" class="card-body table-responsive">
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr class="thead-dark">
+                <th colspan="8">Running pools</th>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <th><i class="fa fa-bars"></i> Height</th>
+                <th><i class="fas fa-tachometer-alt"></i> Hashrate</th>
+                <th><i class="fas fa-users"></i> Miners</th>
+                <th><i class="far fa-clock"></i> Last mining block</th>
+                <th><i class="fas fa-cubes"></i> Pending blocks</th>
+                <th><i class="fas fa-donate"></i> Donation</th>
+                <th><i class="fa fa-dollar-sign"></i> Total fee</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr><td colspan="8"></td></tr>
+            <tr>
+                <td>Stats</td>
+                <td><span id=totalHeight></span></td>
+                <td><span id=totalHashrate></span> <span id=averageWindow></span></td>
+                <td><span id=totalMiners></td>
+                <td><span id=totalLastFound></td>
+                <td><span id=totalPending></span></td>
+                <td><span id=totalDonations></span></td>
+                <td><span id=totalFees></span></td>
+            </tr>
+            </tfoot>
+            <tbody id="pool_rows">
+            </tbody>
+        </table>
+    </div>
 <script>
     currentPage = {
         destroy: function(){
         },
+        init: function (){
+            if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
+                $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
+                getCurrentMinedBlock();
+                getBlocks(lastMinedBlockHeader.block_header.height);
+            }
+        },
         update: function(){
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
-
+                $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
+                getCurrentMinedBlock();
+                getBlocks(lastMinedBlockHeader.block_header.height);
             }
+            fetchPoolData();
         }
     };
+
+    var poolData = new Array();
+    function fetchPoolData(){
+        fetchedData=new Array();
+        for (var i = 0, len = poolList.length; i < len; i++) {
+            if(poolList[i].visible) {
+                fetchedData.length=0;
+                poolData.length=0;
+                xhrGetCurrentPoolStat = $.ajax({
+                    url: poolList[i].api + '/stats',
+                    method: "GET",
+                    dataType: 'json',
+                    cache: 'false',
+                    timeout: 3000,
+                    poolId: poolList[i].id,
+                    poolUrl:poolList[i].url,
+                    poolStatus:poolList[i].status
+                })
+                .done(function (data) {
+                    // console.warn('poolId:'+ this.poolId +' xhrstatus '+ xhrGetCurrentPoolStat.status);
+                    if (data.hasOwnProperty('network')) {
+                        d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
+                        fetchedData.push(d);
+                        $.extend(true, poolData, fetchedData); // not reachable
+                    }
+                })
+                .fail(function (xhrGetCurrentPoolStat, exception) {
+                    // do something there
+                    // console.warn('poolId:'+ this.poolId +' xhrstatus '+ xhrGetCurrentPoolStat.status);
+                    // console.warn('poolId:'+ this.poolId +'exception' + exception);
+                    d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":exception};
+                    fetchedData.push(d);
+                    $.extend(true, poolData, fetchedData);
+
+                })
+                .always(function(){
+                    renderPoolData(poolData);
+                });
+            } // end if enabled
+        } // end for
+    }
+
+    function renderPoolData(poolData){
+        var totalMiners = 0;
+        var totalHashrate = 0;
+        var totalHeight = 0;
+        var nbPoolOk = 0;
+        var totalLastFound = 0;
+        var totalPending = 0;
+        var totalDonations = 0;
+        var totalFee = 0 ;
+
+        for(var i= 0; i < poolData.length; i++){
+            st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
+            if (st){
+                height = poolData[i].data.network.height;
+                hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate);
+                poolCoeff=poolData[i].data.pool.hashrate/$('#networkHashrate').attr('data-globalHR');
+                miners = poolData[i].data.pool.miners;
+                blocTimeAgo = jQuery.timeago(new Date(parseInt(poolData[i].data.pool.lastBlockFound)));
+                pending = calculatePending(poolData[i].data);
+                donation = calculateDonations(poolData[i].data);
+                fee = calculateTotalFee(poolData[i].data);
+                // test if pool is synced
+                if(Math.abs(parseInt($('#blockchainHeight').attr('data-height'), 10) - poolData[i].data.network.height) > 2){
+                    hashrate = 'N/A'; // not synced
+                    miners = 'N/A';
+                    pending = 'N/A';
+                    $("#flag-"+poolData[i].id).removeClass("invisible");
+                } else { //synced
+                    $("#flag-"+poolData[i].id).addClass("invisible");
+                    nbPoolOk += 1;
+                    totalHeight += height;
+                    totalHashrate += poolData[i].data.pool.hashrate;
+                    totalMiners += miners;
+                    totalLastFound = poolData[i].data.pool.lastBlockFound > totalLastFound ? poolData[i].data.pool.lastBlockFound : totalLastFound;
+                    totalPending += pending;
+                    totalDonations += donation * poolCoeff;
+                    totalFee += fee * poolCoeff;
+                }
+
+                if (document.getElementById("host-"+poolData[i].id)){
+                    updateText('height-'+poolData[i].id, height);
+                    updateText('hashrate-'+poolData[i].id, hashrate);
+                    updateText('miners-'+poolData[i].id, miners);
+                    updateText('lastBlockFound-'+poolData[i].id, blocTimeAgo);
+                    updateText('pending-'+poolData[i].id, pending);
+                    updateText('donation-'+poolData[i].id, donation);
+                    updateText('totalFee-'+poolData[i].id, fee);
+                } else {
+                    $('#pool_rows').append('<tr>' +
+                        '<td id=host-' + poolData[i].id + '><i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i> <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                        '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
+                        '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
+                        '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
+                        '<td id=lastBlockFound-' + poolData[i].id + '>' + blocTimeAgo + '</td>' +
+                        '<td id=pending-' + poolData[i].id + '>' + pending + '</td>' +
+                        '<td id=donation-' + poolData[i].id + '>' + donation + '%</td>' +
+                        '<td id=totalFee-' + poolData[i].id + '>' + fee + '%</td>' +
+                        '</tr>');
+                } // end if
+            } // end if st handle the rest
+        } // end for
+        updateText('totalHeight', parseInt($('#blockchainHeight').attr('data-height')));
+        updateText('totalMiners', totalMiners);
+        updateText('totalHashrate', getReadableHashRateString(totalHashrate));
+        updateText('totalLastFound', jQuery.timeago(new Date(parseInt(totalLastFound))));
+        updateText('totalPending',totalPending);
+        updateText('totalDonations', totalDonations.toFixed(2)+'%');
+        updateText('totalFees', totalFee.toFixed(2)+'%');
+    }
+
+    function calculateTotalFee(data) {
+        var totalFee = data.config.fee;
+        if(data.config.hasOwnProperty("coreDonation")){
+            totalFee += data.config.donation;
+            totalFee += data.config.coreDonation;
+        } else {
+            for ( property in data.config.donation) {
+                if (data.config.donation.hasOwnProperty(property)) {
+                    totalFee += data.config.donation[property];
+                }
+            }
+        }
+        return totalFee;
+    }
+
+    function calculateDonations(data) {
+        var totalDonations = 0;
+        if(data.config.hasOwnProperty("coreDonation")){
+            totalDonations += data.config.donation;
+            totalDonations += data.config.coreDonation;
+        } else {
+            for ( property in data.config.donation) {
+                if (data.config.donation.hasOwnProperty(property)) {
+                    totalDonations += data.config.donation[property];
+                }
+            }
+        }
+        return totalDonations;
+    }
+
+    function calculatePending(data) {
+        totalPending = 0
+        for(var i= 0; i < data.pool.blocks.length; i++) {
+            if((i+1) % 2 == 0){
+                if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
+                    totalPending++;
+                }
+            }
+        }
+        return totalPending;
+    }
+
+    var xhrGetCurrentMinedBlock;
+    // get last block template (current mining block)
+    function getCurrentMinedBlock() {
+        if (xhrGetCurrentMinedBlock) xhrGetCurrentMinedBlock.abort();
+        xhrGetCurrentMinedBlock = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "2",
+                method: "getblocktemplate",
+                params: {
+                    reserve_size: 0,
+                    wallet_address: "ir3AmNVgaquFesnDNNBkZMGa8vqHhwvqX4JHKuHFj9DQSwDsr4kNunrWhXs1eG34PnDWx7cbn8nJ9bN2gnHC99eA1kceFnJ1k"
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                if (data.hasOwnProperty('result')) {
+                    currentMinedBlock = data.result;
+                    updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
+                    $('#networkHashrate').attr('data-globalHR', currentMinedBlock.difficulty / coinDifficultyTarget);
+                    updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
+                    updateText('blockchainHeight', currentMinedBlock.height);
+                    fetchPoolData();
+                } else {
+                    showalert('alert-danger','Core error : ',data.error.message);
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetCurrentMinedBlock, textStatus) {
+                if (textStatus != "abort") {
+                    showalert('alert-danger','Can\'t connect to api : ',textStatus);
+                    $('#loading').hide();
+                }
+            });
+    }
+    var xhrGetLastBlocks;
+    function getBlocks(heightAsked) {
+        if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
+        xhrGetLastBlocks = $.ajax({
+            url: api + '/json_rpc',
+            method: "POST",
+            data: JSON.stringify({
+                jsonrpc: "2.0",
+                id: "4",
+                method: "f_blocks_list_json",
+                params: {
+                    height:heightAsked
+                }
+            }),
+            dataType: 'json',
+            cache: 'false'
+        })
+            .done(function (data) {
+                if (data.hasOwnProperty('result')) {
+                    lastBlocksList = data.result.blocks;
+                    averageBlocks(lastBlocksList);
+                    $('#loading').hide();
+                } else {
+                    showalert('alert-danger','Core error : ',data.error.message);
+                    $('#loading').hide();
+                }
+            })
+            .fail(function (xhrGetLastBlocks, textStatus) {
+                if (textStatus != "abort") {
+                    showalert('alert-danger','Can\'t connect to api : ',textStatus);
+                    $('#loading').hide();
+                }
+            });
+    }
+
+    // Handle Blocks list
+    function averageBlocks(blocksResults){
+        sumDiff = 0;
+        for ( i = 0; i < blocksResults.length; i ++){
+            block = blocksResults[i];
+            sumDiff += blocksResults[i].difficulty;
+        }
+        averageHashRate = sumDiff / blocksResults.length;
+        updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
+    }
+    // enable popover
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover({})
+    });
 </script>

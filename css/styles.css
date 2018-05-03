@@ -119,3 +119,33 @@ footer {
     color: #fff;
     border-color: #4E6A75;
 }
+
+.alert_wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#alert_placeholder {
+    position: fixed;
+    top: 100px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 80%;
+    max-width: 800px;
+    display: none;
+}
+#pool_table{
+    padding: 0px !important;
+    /*font-size:0.8em;*/
+    width: 100%;
+}
+
+.table-sm td, .table-sm th {
+    padding: .45rem !important;
+}
