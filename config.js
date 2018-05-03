@@ -1,5 +1,5 @@
 // settings
-var api = "https://explorer.beta.ird.cash";
+var api = "https://explorer.ird.cash";
 var coinDifficultyTarget=175;
 var symbol="IRD";
 var coinUnits=100000000;
