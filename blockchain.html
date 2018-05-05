@@ -22,7 +22,7 @@
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
                       data-content="On the last visible blocks">
-                        <i class="fas fa-percent"></i></i> Average Hash Rate: <span id="averageHashrate"></span>
+                        <i class="fas fa-percent"></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
             </div>
         </div>
@@ -69,6 +69,9 @@
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
         },
         init: function (){
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
             currentPage.update();
         },
         update: function () {

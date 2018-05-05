@@ -22,7 +22,7 @@
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
                       data-content="On the 31 blocks">
-                        <i class="fas fa-percent"></i></i> Average Hash Rate: <span id="averageHashrate"></span>
+                        <i class="fas fa-percent"></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
             </div>
         </div>
@@ -31,6 +31,7 @@
 <div class="cardpad card">
     <div class="card-header text-center">
         <h2>Iridium pools list</h2>
+        <i id="pools_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <div id="pool_table" class="card-body table-responsive">
         <table class="table table-hover table-sm">
@@ -66,11 +67,40 @@
             </tbody>
         </table>
     </div>
+    <div id="dead_table" class="card-body table-responsive">
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr class="thead-light">
+                <th colspan="8">Unreachable or dead pools</th>
+            </tr>
+            <tr>
+                <th colspan="8">Address</th>
+            </tr>
+            </thead>
+            <tbody id="dead_rows">
+            </tbody>
+        </table>
+    </div>
 <script>
     currentPage = {
         destroy: function(){
+            if (xhrGetCurrentPoolStat) xhrGetCurrentPoolStat.abort();
+            totalMiners = 0;
+            totalHashrate = 0;
+            totalHeight = 0;
+            nbPoolOk = 0;
+            totalLastFound = 0;
+            totalPending = 0;
+            totalDonations = 0;
+            totalFee = 0 ;
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
+            }
         },
         init: function (){
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
@@ -88,8 +118,10 @@
     };
 
     var poolData = new Array();
+    var xhrGetCurrentPoolStat;
     function fetchPoolData(){
-        fetchedData=new Array();
+        fetchedData=new Array()
+        poolData.length=0;
         for (var i = 0, len = poolList.length; i < len; i++) {
             if(poolList[i].visible) {
                 fetchedData.length=0;
@@ -99,33 +131,60 @@
                     method: "GET",
                     dataType: 'json',
                     cache: 'false',
-                    timeout: 3000,
+                    timeout: 5000,
                     poolId: poolList[i].id,
                     poolUrl:poolList[i].url,
                     poolStatus:poolList[i].status
                 })
-                .done(function (data) {
-                    // console.warn('poolId:'+ this.poolId +' xhrstatus '+ xhrGetCurrentPoolStat.status);
+                .done(function (data, status) {
                     if (data.hasOwnProperty('network')) {
                         d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
                         fetchedData.push(d);
-                        $.extend(true, poolData, fetchedData); // not reachable
+                        $.extend(true, poolData, fetchedData);
+                         totalMiners = 0;
+                         totalHashrate = 0;
+                         totalHeight = 0;
+                         nbPoolOk = 0;
+                         totalLastFound = 0;
+                         totalPending = 0;
+                         totalDonations = 0;
+                         totalFee = 0 ;
+                    } else {
+                        d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
+                        fetchedData.push(d); // not reachable
+                        $.extend(true, poolData, fetchedData);
                     }
+                    renderPoolData(poolData);
                 })
-                .fail(function (xhrGetCurrentPoolStat, exception) {
-                    // do something there
-                    // console.warn('poolId:'+ this.poolId +' xhrstatus '+ xhrGetCurrentPoolStat.status);
-                    // console.warn('poolId:'+ this.poolId +'exception' + exception);
-                    d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":exception};
-                    fetchedData.push(d);
+                .fail(function (xhrGetCurrentPoolStat, status) {
+                    // console.warn('poolUrl:'+ this.url +' xhrstatus '+ status);
+                    d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
+                    fetchedData.push(d); // not reachable
                     $.extend(true, poolData, fetchedData);
+                    renderPoolData(poolData);
 
                 })
                 .always(function(){
-                    renderPoolData(poolData);
+                    poolPulse = setTimeout(function () {
+                        console.log('pool tick');
+                        poolTxUpdate();
+                        renderPoolData(poolData);
+                    }, 30000);
                 });
             } // end if enabled
         } // end for
+    }
+
+    // show tx working icon
+    function poolTxUpdate() {
+        console.log('rotate tick');
+        var pools_updated = document.getElementById('pools_updated');
+        pools_updated.style.transition = 'opacity 100ms ease-out';
+        pools_updated.style.opacity = 1;
+        setTimeout(function () {
+            pools_updated.style.transition = 'opacity 900ms linear';
+            pools_updated.style.opacity = 0;
+        }, 100);
     }
 
     function renderPoolData(poolData){
@@ -137,7 +196,6 @@
         var totalPending = 0;
         var totalDonations = 0;
         var totalFee = 0 ;
-
         for(var i= 0; i < poolData.length; i++){
             st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
             if (st){
@@ -176,8 +234,11 @@
                     updateText('donation-'+poolData[i].id, donation);
                     updateText('totalFee-'+poolData[i].id, fee);
                 } else {
+
                     $('#pool_rows').append('<tr>' +
-                        '<td id=host-' + poolData[i].id + '><i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i> <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                        '<td id=host-' + poolData[i].id + '>' +
+                        '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i>'+
+                        ' <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
                         '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                         '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                         '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
@@ -187,7 +248,14 @@
                         '<td id=totalFee-' + poolData[i].id + '>' + fee + '%</td>' +
                         '</tr>');
                 } // end if
-            } // end if st handle the rest
+            } else { // unreachable
+                if (! document.getElementById("host-"+poolData[i].id)) {
+                    $('#dead_rows').append('<tr colspan="8">' +
+                        '<td id=host-' + poolData[i].id + '><i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i> <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                        '</tr>');
+                }
+            }
+
         } // end for
         updateText('totalHeight', parseInt($('#blockchainHeight').attr('data-height')));
         updateText('totalMiners', totalMiners);
@@ -232,7 +300,7 @@
         totalPending = 0
         for(var i= 0; i < data.pool.blocks.length; i++) {
             if((i+1) % 2 == 0){
-                if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
+                if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 19)){
                     totalPending++;
                 }
             }

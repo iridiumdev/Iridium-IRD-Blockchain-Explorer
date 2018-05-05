@@ -138,7 +138,8 @@
             })
             .always(function () {
                 refreshAll = setTimeout(function () {
-                    fetchLiveLastMinedBlockHeader()
+                    console.log('tick');
+                    fetchLiveLastMinedBlockHeader();
                 }, 60000);
             })
             .fail(function (xhrFetchLastMinedBlockHeader, textStatus) {

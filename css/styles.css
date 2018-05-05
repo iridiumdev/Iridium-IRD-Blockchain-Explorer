@@ -99,6 +99,12 @@ footer {
     font-size: 0.9em;
 }
 
+#pools_updated{
+    opacity: 0;
+    float: right;
+    font-size: 0.9em;
+}
+
 /*forms*/
 .form-control {
     border: 1px solid #4E6A75;
@@ -146,6 +152,13 @@ footer {
     width: 100%;
 }
 
+#dead_table{
+    padding: 0px !important;
+    /*font-size:0.8em;*/
+    width: 100%;
+}
+
 .table-sm td, .table-sm th {
     padding: .45rem !important;
 }
+

@@ -147,7 +147,9 @@
     currentPage = {
         destroy: function(){
         },
-        init: function (){
+            init: function (){if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
             getBlock();
         },
         update: function(){

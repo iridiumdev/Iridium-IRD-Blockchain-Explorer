@@ -75,7 +75,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Waiting transaction(s) pool" id="nb_tx"></span>
+        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Waiting transaction(s) in pool" id="nb_tx"></span>
         <i id="tx_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <div id="tx_table" class="card-body table-responsive d-none">
@@ -325,9 +325,10 @@
             })
             .always(function () {
                 txPulse = setTimeout(function () {
+                    console.log('tx tick');
                     pulseTxUpdate();
                     getTxPool();
-                }, 5000);
+                }, 15000);
             });
     }
     // Handle transaction pool
