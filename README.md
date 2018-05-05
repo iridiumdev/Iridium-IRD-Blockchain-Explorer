@@ -1,6 +1,6 @@
 # iridium block explorer (IRD)
 
-This is the next version of the iridium block explorer, network status and pool lists. an online version is available here : https://explorer.beta.ird.cash
+This is the new version of the iridium block explorer, network status and pool lists. an online version is available here : https://explorer.ird.cash
 
 **To devellop locally : you can spawn a local webserver and use and allow CORS (Cross origin ressource sharing) in your browser**
 
@@ -43,8 +43,8 @@ This is the next version of the iridium block explorer, network status and pool 
   * [ ] modal window
   
 * pools
-  * [ ] pools list
-  * [ ] overall stats
+  * [x] pools list
+  * [x] overall stats
   * [ ] order by hashrate/miners...
   * [ ] map of pools (geoip)
 
