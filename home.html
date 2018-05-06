@@ -12,7 +12,7 @@
                 </p>
                 <p>
                     <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Based on the current mined block">
-                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                        <i class="fas fa-tachometer-alt"></i> Instant Hash Rate: <span id="networkHashrate"></span>
                     </span>
                 </p>
                 <p>
@@ -131,6 +131,9 @@
             }
         },
         init: function (){
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
+            }
             currentPage.update();
         },
         update: function () {

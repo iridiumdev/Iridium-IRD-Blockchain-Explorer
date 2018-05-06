@@ -148,13 +148,14 @@ footer {
 }
 #pool_table{
     padding: 0px !important;
-    /*font-size:0.8em;*/
     width: 100%;
 }
-
+#out_table{
+    padding: 0px !important;
+    width: 100%;
+}
 #dead_table{
     padding: 0px !important;
-    /*font-size:0.8em;*/
     width: 100%;
 }
 

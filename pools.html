@@ -10,7 +10,7 @@
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
                       data-content="Based on the current mined block">
-                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                        <i class="fas fa-tachometer-alt"></i> Instant Hash Rate: <span id="networkHashrate"></span>
                     </span>
             </div>
             <div class="col-sm-3">
@@ -33,6 +33,7 @@
         <h2>Iridium pools list</h2>
         <i id="pools_updated" class="fas fa-sync fa-spin"></i>
     </div>
+    <!--Running pools-->
     <div id="pool_table" class="card-body table-responsive">
         <table class="table table-hover table-sm">
             <thead>
@@ -66,21 +67,46 @@
             <tbody id="pool_rows">
             </tbody>
         </table>
+
+    <!--out of order pools-->
+
+        <table id="out_table" class="table table-hover table-sm d-none">
+        <thead>
+        <tr class="thead-light">
+            <th colspan="8">Out of order pools (not synced or stucked)</th>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <th><i class="fa fa-bars"></i> Height</th>
+            <th><i class="fas fa-tachometer-alt"></i> Hashrate</th>
+            <th><i class="fas fa-users"></i> Miners</th>
+            <th><i class="far fa-clock"></i> Last mining block</th>
+            <th><i class="fas fa-cubes"></i> Pending blocks</th>
+            <th><i class="fas fa-donate"></i> Donation</th>
+            <th><i class="fa fa-dollar-sign"></i> Total fee</th>
+        </tr>
+        </thead>
+        <tbody id="out_rows">
+        </tbody>
+    </table>
+
+    <!--dead pools-->
+
+        <table id="dead_table" class="table table-hover table-sm d-none">
+        <thead>
+        <tr class="thead-light">
+            <th colspan="8">Unreachable or dead pools</th>
+        </tr>
+        <tr>
+            <th colspan="8">Address</th>
+        </tr>
+        </thead>
+        <tbody id="dead_rows">
+        </tbody>
+    </table>
     </div>
-    <div id="dead_table" class="card-body table-responsive">
-        <table class="table table-hover table-sm">
-            <thead>
-            <tr class="thead-light">
-                <th colspan="8">Unreachable or dead pools</th>
-            </tr>
-            <tr>
-                <th colspan="8">Address</th>
-            </tr>
-            </thead>
-            <tbody id="dead_rows">
-            </tbody>
-        </table>
-    </div>
+</div>
+
 <script>
     currentPage = {
         destroy: function(){
@@ -166,7 +192,7 @@
                 })
                 .always(function(){
                     poolPulse = setTimeout(function () {
-                        console.log('pool tick');
+                        // console.log('pool tick');
                         poolTxUpdate();
                         renderPoolData(poolData);
                     }, 30000);
@@ -177,10 +203,10 @@
 
     // show tx working icon
     function poolTxUpdate() {
-        console.log('rotate tick');
         var pools_updated = document.getElementById('pools_updated');
         pools_updated.style.transition = 'opacity 100ms ease-out';
         pools_updated.style.opacity = 1;
+        // Todo destroy both timeout
         setTimeout(function () {
             pools_updated.style.transition = 'opacity 900ms linear';
             pools_updated.style.opacity = 0;
@@ -212,7 +238,32 @@
                     hashrate = 'N/A'; // not synced
                     miners = 'N/A';
                     pending = 'N/A';
+                    if (document.getElementById("host-"+poolData[i].id)){
+                        updateText('height-'+poolData[i].id, height);
+                        updateText('hashrate-'+poolData[i].id, hashrate);
+                        updateText('miners-'+poolData[i].id, miners);
+                        updateText('lastBlockFound-'+poolData[i].id, blocTimeAgo);
+                        updateText('pending-'+poolData[i].id, pending);
+                        updateText('donation-'+poolData[i].id, donation);
+                        updateText('totalFee-'+poolData[i].id, fee);
+                    } else {
+
+                        $('#out_rows').append('<tr>' +
+                            '<td id=host-' + poolData[i].id + '>' +
+                            '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i>'+
+                            ' <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                            '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
+                            '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
+                            '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
+                            '<td id=lastBlockFound-' + poolData[i].id + '>' + blocTimeAgo + '</td>' +
+                            '<td id=pending-' + poolData[i].id + '>' + pending + '</td>' +
+                            '<td id=donation-' + poolData[i].id + '>' + donation + '%</td>' +
+                            '<td id=totalFee-' + poolData[i].id + '>' + fee + '%</td>' +
+                            '</tr>');
+                    }
                     $("#flag-"+poolData[i].id).removeClass("invisible");
+                    $('#out_table').removeClass('d-none');
+
                 } else { //synced
                     $("#flag-"+poolData[i].id).addClass("invisible");
                     nbPoolOk += 1;
@@ -253,6 +304,7 @@
                     $('#dead_rows').append('<tr colspan="8">' +
                         '<td id=host-' + poolData[i].id + '><i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i> <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
                         '</tr>');
+                    $('#dead_table').removeClass('d-none');
                 }
             }
 

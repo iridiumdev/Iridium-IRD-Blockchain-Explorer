@@ -10,7 +10,7 @@
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
                       data-content="Based on the current mined block">
-                        <i class="fas fa-tachometer-alt"></i> Global Hash Rate: <span id="networkHashrate"></span>
+                        <i class="fas fa-tachometer-alt"></i> Instant Hash Rate: <span id="networkHashrate"></span>
                     </span>
             </div>
             <div class="col-sm-3">
@@ -71,6 +71,9 @@
         init: function (){
             if(typeof txPulse !== 'undefined') {
                 clearTimeout(txPulse);
+            }
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
             }
             currentPage.update();
         },
