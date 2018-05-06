@@ -129,11 +129,11 @@
             if(typeof txPulse !== 'undefined') {
                 clearTimeout(txPulse);
             }
+            if(typeof tx_wheel !== 'undefined') {
+                clearTimeout(tx_wheel);
+            }
         },
         init: function (){
-            if(typeof poolPulse !== 'undefined') {
-                clearTimeout(poolPulse);
-            }
             currentPage.update();
         },
         update: function () {
@@ -328,7 +328,7 @@
             })
             .always(function () {
                 txPulse = setTimeout(function () {
-                    console.log('tx tick');
+                    // console.log('tx tick');
                     pulseTxUpdate();
                     getTxPool();
                 }, 15000);
@@ -371,14 +371,14 @@
         var tx_update = document.getElementById('tx_updated');
         tx_update.style.transition = 'opacity 100ms ease-out';
         tx_update.style.opacity = 1;
-        setTimeout(function () {
+        tx_wheel = setTimeout(function () {
             tx_update.style.transition = 'opacity 900ms linear';
             tx_update.style.opacity = 0;
         }, 100);
     }
 
     $('#btn_search').click(function(e) {
-        console.warn('search !');
+        // console.warn('search !');
         text = document.getElementById('txt_search').value;
         // by height
         var xhrGetSearchBlockbyHeight;
@@ -399,7 +399,7 @@
                 cache: 'false'
             })
                 .done(function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.hasOwnProperty('result')) {
                         block = data.result.block_header;
                         window.location.href = getBlockchainUrl(block.hash);

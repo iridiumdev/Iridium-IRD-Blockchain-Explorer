@@ -110,23 +110,17 @@
 <script>
     currentPage = {
         destroy: function(){
+            // console.warn('destroy');
             if (xhrGetCurrentPoolStat) xhrGetCurrentPoolStat.abort();
-            totalMiners = 0;
-            totalHashrate = 0;
-            totalHeight = 0;
-            nbPoolOk = 0;
-            totalLastFound = 0;
-            totalPending = 0;
-            totalDonations = 0;
-            totalFee = 0 ;
             if(typeof poolPulse !== 'undefined') {
                 clearTimeout(poolPulse);
             }
+            if(typeof poolWheel !== 'undefined') {
+                clearTimeout(poolWheel);
+            }
         },
         init: function (){
-            if(typeof txPulse !== 'undefined') {
-                clearTimeout(txPulse);
-            }
+            // console.warn('init');
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
@@ -134,12 +128,12 @@
             }
         },
         update: function(){
+            // console.warn('update');
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
                 getBlocks(lastMinedBlockHeader.block_header.height);
             }
-            fetchPoolData();
         }
     };
 
@@ -167,14 +161,6 @@
                         d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
                         fetchedData.push(d);
                         $.extend(true, poolData, fetchedData);
-                         totalMiners = 0;
-                         totalHashrate = 0;
-                         totalHeight = 0;
-                         nbPoolOk = 0;
-                         totalLastFound = 0;
-                         totalPending = 0;
-                         totalDonations = 0;
-                         totalFee = 0 ;
                     } else {
                         d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
                         fetchedData.push(d); // not reachable
@@ -195,7 +181,7 @@
                         // console.log('pool tick');
                         poolTxUpdate();
                         renderPoolData(poolData);
-                    }, 30000);
+                    }, 35000);
                 });
             } // end if enabled
         } // end for
@@ -207,7 +193,7 @@
         pools_updated.style.transition = 'opacity 100ms ease-out';
         pools_updated.style.opacity = 1;
         // Todo destroy both timeout
-        setTimeout(function () {
+            poolWheel = setTimeout(function () {
             pools_updated.style.transition = 'opacity 900ms linear';
             pools_updated.style.opacity = 0;
         }, 100);
@@ -386,7 +372,7 @@
                     $('#networkHashrate').attr('data-globalHR', currentMinedBlock.difficulty / coinDifficultyTarget);
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
-                    fetchPoolData();
+                    // fetchPoolData();
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
@@ -425,6 +411,7 @@
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
                 }
+                fetchPoolData();
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
                 if (textStatus != "abort") {

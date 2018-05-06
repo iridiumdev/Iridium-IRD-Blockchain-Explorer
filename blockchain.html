@@ -69,12 +69,6 @@
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
         },
         init: function (){
-            if(typeof txPulse !== 'undefined') {
-                clearTimeout(txPulse);
-            }
-            if(typeof poolPulse !== 'undefined') {
-                clearTimeout(poolPulse);
-            }
             currentPage.update();
         },
         update: function () {

@@ -147,12 +147,7 @@
     currentPage = {
         destroy: function(){
         },
-            init: function (){if(typeof txPulse !== 'undefined') {
-                clearTimeout(txPulse);
-            }
-            if(typeof poolPulse !== 'undefined') {
-                clearTimeout(poolPulse);
-            }
+        init: function (){
             getBlock();
         },
         update: function(){
@@ -161,7 +156,7 @@
 
     var xhrGetBlock;
     function getBlock() {
-        console.log(urlParam('hash'));
+        // console.log(urlParam('hash'));
         if (xhrGetBlock) xhrGetBlock.abort();
         xhrGetBlock = $.ajax({
             url: api + '/json_rpc',
