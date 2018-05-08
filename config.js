@@ -15,11 +15,13 @@ var poolList = [
     {"id":5,"visible":true,"url":"https://irdpool.de","api":"https://irdpool.de/api","status":true},
     {"id":6,"visible":true,"url":"https://cryptoknight.cc/iridium","api":"https://cryptoknight.cc/rpc/iridium","status":true},
     {"id":7,"visible":true,"url":"https://mineallcrypto.com/iridium","api":"https://mineallcrypto.com/iridium/pool","status":true},
-    {"id":8,"visible":true,"url":"http://ird.cashpool.us","api":"https://explorer.ird.cash/cashpool","status":true},
-    {"id":9,"visible":true,"url":"http://irdpool.tk","api":"https://explorer.ird.cash/tk","status":true},
-    {"id":10,"visible":true,"url":"http://irdpool.ru","api":"https://explorer.ird.cash/ru","status":true},
-    {"id":11,"visible":true,"url":"http://iridiumpool.duckdns.org","api":"https://explorer.ird.cash/nl","status":true},
-    {"id":12,"visible":true,"url":"http://irdpool.online","api":"https://explorer.ird.cash/onl","status":true},
-    {"id":13,"visible":true,"url":"http://iridiumcoin.sixpools.tk","api":"https://explorer.ird.cash/six","status":true},
-    {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://explorer.ird.cash/io","status":true}
+    {"id":8,"visible":true,"url":"http://ird.cashpool.us","api":"https://mig.ird.cash/cashpool","status":true},
+    {"id":9,"visible":true,"url":"http://irdpool.tk","api":"https://mig.ird.cash/tk","status":true},
+    {"id":10,"visible":true,"url":"http://irdpool.ru","api":"https://mig.ird.cash/ru","status":true},
+    {"id":11,"visible":true,"url":"http://iridiumpool.duckdns.org","api":"https://mig.ird.cash/nl","status":true},
+    {"id":12,"visible":true,"url":"http://irdpool.online","api":"https://mig.ird.cash/onl","status":true},
+    {"id":13,"visible":true,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":true},
+    {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://mig.ird.cash/io","status":true},
+    {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true}
+
 ];
