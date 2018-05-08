@@ -1,0 +1,7 @@
+#!/bin/bash
+issued_coin=$(curl -s https://explorer.ird.cash/get_generated_coins | jq -r '.alreadyGeneratedCoins')
+echo "HTTP/1.0 200 OK"
+echo "Content-type: text/plain"
+echo ""
+awk "BEGIN {printf \"%.8f\n\", $issued_coin/100000000}"
+exit 0
