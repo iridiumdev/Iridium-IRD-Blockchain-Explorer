@@ -25,3 +25,8 @@ var poolList = [
     {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true}
 
 ];
+var seedsNodes = [
+    {"id":"rbx","url":"https://mig.ird.cash/rbx"},
+    {"id":"mtl","url":"https://mig.ird.cash/mtl"},
+    {"id":"sdn","url":"https://mig.ird.cash/sdn"},
+]

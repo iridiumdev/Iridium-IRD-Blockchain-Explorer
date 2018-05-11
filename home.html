@@ -3,6 +3,17 @@
         <div class="cardpad card">
             <div class="card-header">
                 <h2>Network status</h2>
+                <div class="nodes float-right">
+                    <div id="sdn" class="float-right" title="Sydney seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div id="mtl" class="float-right" title="Montreal seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <div id="rbx" class="float-right" title="Roubaix seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <p>
@@ -126,6 +137,7 @@
             if (xhrGetLastMinedBlockDetails) xhrGetLastMinedBlockDetails.abort();
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
             if (xhrGetTxPool) xhrGetTxPool.abort();
+            if (xhrgetSeedsStatus) xhrgetSeedsStatus.abort();
             if(typeof txPulse !== 'undefined') {
                 clearTimeout(txPulse);
             }
@@ -145,10 +157,63 @@
                 getBlocks();
                 getTxPool();
             }
+            getSeedsStatus();
         }
     };
 
     // Current page functions.
+
+    var xhrgetSeedsStatus;
+    function getSeedsStatus(){
+        if (xhrgetSeedsStatus) xhrgetSeedsStatus.abort();
+        for (var i = 0, len = seedsNodes.length; i < len; i++) {
+            xhrgetSeedsStatus = $.ajax({
+                url: seedsNodes[i].url + '/status',
+                method: "GET",
+                dataType: 'json',
+                cache: 'false',
+                timeout: 5000,
+                servId: seedsNodes[i].id,
+            })
+                .done(function (data) {
+                    renderSeeds(this.servId,data);
+                })
+                .fail(function (xhrGetCurrentPoolStat, status) {
+                })
+        }
+
+    }
+
+    function renderSeeds (servId,data) {
+        var seedInfo = '';
+        var seedError = false;
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                if(data[key].status == 'OK'){
+                    // test if node is synced
+                    if( Math.abs( lastMinedBlockHeader.block_header.height - data[key].height ) > 1){
+                        seedInfo = seedInfo + key + ' : ' + data[key].height + '/'  + lastMinedBlockHeader.block_header.height+'<br/>';
+                        seedError = true;
+                    } else { // synced
+                        seedInfo = seedInfo + key + ' : ' + data[key].status + ', height : '+ data[key].height + '<br/>';
+                    }
+                } else { // node is unreachable
+                    seedInfo = seedInfo + key + ' : ' + data[key].status + '<br/>';
+                    seedError = true;
+                }
+                if(seedError){
+                    $('#'+servId).removeClass('text-success');
+                    $('#'+servId).addClass('text-danger');
+                } else {
+                    $('#'+servId).removeClass('text-danger');
+                    $('#'+servId).addClass('text-success');
+                }
+
+                $('#'+servId).attr('data-content', seedInfo);
+            }
+        }
+    }
+
     var xhrGetCurrentMinedBlock;
     // get last block template (current mining block)
     function getCurrentMinedBlock() {

@@ -163,3 +163,24 @@ footer {
     padding: .45rem !important;
 }
 
+#rbx{
+    /*color: #00FF00;*/
+    font-size: 1.2em;
+    text-align: center;
+
+}
+#mtl{
+    /*color: #00FF00;*/
+    font-size: 1.2em;
+    text-align: center;
+
+}
+#sdn{
+    /*color: #00FF00;*/
+    font-size: 1.2em;
+    text-align: center;
+
+}
+.nodes {
+    margin-top: -1.5em;
+}

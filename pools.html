@@ -21,7 +21,7 @@
             </div>
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
-                      data-content="On the 31 blocks">
+                      data-content="On the last 31 blocks">
                         <i class="fas fa-percent"></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
             </div>
@@ -110,7 +110,6 @@
 <script>
     currentPage = {
         destroy: function(){
-            // console.warn('destroy');
             if (xhrGetCurrentPoolStat) xhrGetCurrentPoolStat.abort();
             if(typeof poolPulse !== 'undefined') {
                 clearTimeout(poolPulse);
@@ -120,7 +119,6 @@
             }
         },
         init: function (){
-            // console.warn('init');
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
@@ -128,7 +126,6 @@
             }
         },
         update: function(){
-            // console.warn('update');
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
@@ -169,7 +166,6 @@
                     renderPoolData(poolData);
                 })
                 .fail(function (xhrGetCurrentPoolStat, status) {
-                    // console.warn('poolUrl:'+ this.url +' xhrstatus '+ status);
                     d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
                     fetchedData.push(d); // not reachable
                     $.extend(true, poolData, fetchedData);
