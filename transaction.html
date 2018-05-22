@@ -125,11 +125,17 @@
 <script>
     currentPage = {
         init: function (){
-            if(typeof txPulse !== 'undefined') {
-                clearTimeout(txPulse);
+            if(typeof poolUpdate !== 'undefined') {
+                clearTimeout(poolUpdate);
             }
             if(typeof poolPulse !== 'undefined') {
                 clearTimeout(poolPulse);
+            }
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
+            if(typeof tx_wheel !== 'undefined') {
+                clearTimeout(tx_wheel);
             }
             renderTransaction();
         },
@@ -142,7 +148,7 @@
         }
     };
 
-    var xhrGetTransaction;
+    let xhrGetTransaction;
     function renderTransaction(){
         if (xhrGetTransaction) xhrGetTransaction.abort();
         xhrGetTransaction = $.ajax({
@@ -201,7 +207,7 @@
 
 
     function getInputRowElement(input, jsonString){
-        var row = document.createElement('tr');
+        const row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
         row.setAttribute('data-k_image', input.value.k_image);
         row.setAttribute('id', 'inputRow' + input.value.k_image);
@@ -210,18 +216,18 @@
     }
 
     function renderInputs(inputResults){
-        var $inputsRows = $('#inputs_rows');
-        for (var i = 0; i < inputResults.length; i++){
-            var input = inputResults[i];
+        const $inputsRows = $('#inputs_rows');
+        for (let i = 0; i < inputResults.length; i++){
+            let input = inputResults[i];
             if (!input.value.amount)
                 continue;
-            var inputJson = JSON.stringify(input);
-            var existingRow = document.getElementById('inputRow' + input.value.k_image);
+            let inputJson = JSON.stringify(input);
+            let existingRow = document.getElementById('inputRow' + input.value.k_image);
             if (existingRow && existingRow.getAttribute('data-json') !== inputJson){
                 $(existingRow).replaceWith(getInputRowElement(input, inputJson));
             }
             else if (!existingRow){
-                var inputElement = getInputRowElement(input, inputJson);
+                let inputElement = getInputRowElement(input, inputJson);
                 $inputsRows.append(inputElement);
             }
         }
@@ -234,7 +240,7 @@
 
 
     function getOutputRowElement(output, jsonString){
-        var row = document.createElement('tr');
+        const row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
         row.setAttribute('data-k_image', output.target.data.key);
         row.setAttribute('id', 'outputRow' + output.target.data.key);
@@ -243,16 +249,16 @@
     }
 
     function renderOutputs(outputResults){
-        var $outputsRows = $('#outputs_rows');
-        for (var i = 0; i < outputResults.length; i++){
-            var output = outputResults[i];
-            var outputJson = JSON.stringify(output);
-            var existingRow = document.getElementById('outputRow' + output.target.data.key);
+        const $outputsRows = $('#outputs_rows');
+        for (let i = 0; i < outputResults.length; i++){
+            let output = outputResults[i];
+            let outputJson = JSON.stringify(output);
+            let existingRow = document.getElementById('outputRow' + output.target.data.key);
             if (existingRow && existingRow.getAttribute('data-json') !== outputJson){
                 $(existingRow).replaceWith(getOutputRowElement(output, outputJson));
             }
             else if (!existingRow){
-                var outputElement = getOutputRowElement(output, outputJson);
+                let outputElement = getOutputRowElement(output, outputJson);
                 $outputsRows.append(outputElement);
             }
         }

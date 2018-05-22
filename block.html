@@ -148,6 +148,18 @@
         destroy: function(){
         },
         init: function (){
+            if(typeof poolUpdate !== 'undefined') {
+                clearTimeout(poolUpdate);
+            }
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
+            }
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
+            if(typeof tx_wheel !== 'undefined') {
+                clearTimeout(tx_wheel);
+            }
             getBlock();
         },
         update: function(){
@@ -174,7 +186,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    block = data.result.block;
+                    let block = data.result.block;
                     updateText('block.hash', block.hash);
                     updateText('block.height', block.height);
                     updateText('block.timestamp', formatDate(block.timestamp));
@@ -222,13 +234,13 @@
     }
 
     function getTransactionRowElement(transaction) {
-        var row = document.createElement('tr');
+        const row = document.createElement('tr');
         row.innerHTML = getTransactionCells(transaction);
         return row;
     }
     function renderTransactions(transactionResults){
-        for (i = 0; i < transactionResults.length; i++){
-            transactionElement = getTransactionRowElement(transactionResults[i]);
+        for (let i = 0; i < transactionResults.length; i++){
+            let transactionElement = getTransactionRowElement(transactionResults[i]);
             $('#transactions_rows').append(transactionElement);
         }
     }

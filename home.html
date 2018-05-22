@@ -146,6 +146,12 @@
             }
         },
         init: function (){
+            if(typeof poolUpdate !== 'undefined') {
+                clearTimeout(poolUpdate);
+            }
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
+            }
             currentPage.update();
         },
         update: function () {
@@ -166,7 +172,7 @@
     var xhrgetSeedsStatus;
     function getSeedsStatus(){
         if (xhrgetSeedsStatus) xhrgetSeedsStatus.abort();
-        for (var i = 0, len = seedsNodes.length; i < len; i++) {
+        for (let i = 0, len = seedsNodes.length; i < len; i++) {
             xhrgetSeedsStatus = $.ajax({
                 url: seedsNodes[i].url + '/status',
                 method: "GET",
@@ -185,9 +191,9 @@
     }
 
     function renderSeeds (servId,data) {
-        var seedInfo = '';
-        var seedError = false;
-        for (var key in data) {
+        let seedInfo = '';
+        let seedError = false;
+        for (let key in data) {
             if (data.hasOwnProperty(key)) {
                 if(data[key].status == 'OK'){
                     // test if node is synced
@@ -235,7 +241,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    currentMinedBlock = data.result;
+                    let currentMinedBlock = data.result;
                     updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
@@ -272,7 +278,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    lastMinedBlockDetails = data.result;
+                    let lastMinedBlockDetails = data.result;
                     updateText('alreadyGeneratedCoins', shortenLargeNumber(lastMinedBlockDetails.block.alreadyGeneratedCoins / coinUnits, 6, 0));
                     updateText('supplypercent', (lastMinedBlockDetails.block.alreadyGeneratedCoins / 25000000000000).toFixed(2) + ' %');
                     updateText('alreadyGeneratedTransactions', shortenLargeNumber(lastMinedBlockDetails.block.alreadyGeneratedTransactions, 3, 1));
@@ -309,7 +315,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    lastBlocksList = data.result.blocks;
+                    let lastBlocksList = data.result.blocks;
                     renderBlocks(lastBlocksList);
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
@@ -327,23 +333,23 @@
     // Handle Blocks list
 
     function renderBlocks(blocksList) {
-        var sumDiff = 0;
+        let sumDiff = 0;
         $('#blocks_rows').empty();
-        for (var i = 0; i < blocksList.length; i++) {
+        for (let i = 0; i < blocksList.length; i++) {
             if (i < 10) {
-                var blockElement = getBlockRowElement(blocksList[i]);
+                let blockElement = getBlockRowElement(blocksList[i]);
                 $('#blocks_rows').append(blockElement);
             }
             sumDiff += blocksList[i].difficulty;
         }
-        averageHashRate = sumDiff / 31;
+        let averageHashRate = sumDiff / 31;
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
         $('#loading').hide();
     }
 
     function getBlockRowElement(block) {
-        var row = document.createElement('tr');
-        var columns =
+        const row = document.createElement('tr');
+        let columns =
             '<td>' + block.height + '</td>' +
             '<td>' + block.difficulty + '</td>' +
             '<td>' + formatBlockLink(block.hash) + '</td>' +
@@ -393,10 +399,10 @@
             })
             .always(function () {
                 txPulse = setTimeout(function () {
-                    // console.log('tx tick');
+                    console.log('tx tick');
                     pulseTxUpdate();
                     getTxPool();
-                }, 15000);
+                }, 16000);
             });
     }
     // Handle transaction pool
@@ -408,7 +414,7 @@
     }
 
     function getTransactionRowElement(transaction, jsonString) {
-        var row = document.createElement('tr');
+        const row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
         row.setAttribute('data-hash', transaction.hash);
         row.setAttribute('id', 'transactionRow' + transaction.hash);
@@ -417,27 +423,27 @@
     }
 
     function renderTransactions(transactionResults) {
-        var $transactionsRows = $('#transactions_rows');
-        for (var i = 0; i < transactionResults.length; i++) {
-            var transaction = transactionResults[i];
-            var transactionJson = JSON.stringify(transaction);
-            var existingRow = document.getElementById('transactionRow' + transaction.hash);
+        const $transactionsRows = $('#transactions_rows');
+        for (let i = 0; i < transactionResults.length; i++) {
+            let transaction = transactionResults[i];
+            let transactionJson = JSON.stringify(transaction);
+            let existingRow = document.getElementById('transactionRow' + transaction.hash);
             if (existingRow && existingRow.getAttribute('data-json') !== transactionJson) {
                 $(existingRow).replaceWith(getTransactionRowElement(transaction, transactionJson));
             }
             else if (!existingRow) {
-                var transactionElement = getTransactionRowElement(transaction, transactionJson);
+                let transactionElement = getTransactionRowElement(transaction, transactionJson);
                 $transactionsRows.append(transactionElement);
             }
         }
     }
     // show tx working icon
     function pulseTxUpdate() {
-        var tx_update = document.getElementById('tx_updated');
+        const tx_update = document.getElementById('tx_updated');
         tx_update.style.transition = 'opacity 100ms ease-out';
         tx_update.style.opacity = 1;
         tx_wheel = setTimeout(function () {
-            tx_update.style.transition = 'opacity 900ms linear';
+            tx_update.style.transition = 'opacity 4000ms linear';
             tx_update.style.opacity = 0;
         }, 100);
     }

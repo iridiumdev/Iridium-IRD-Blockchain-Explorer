@@ -30,7 +30,7 @@
 </div>
 <div class="cardpad card">
     <div class="card-header text-center">
-        <h2>Iridium pools list</h2>
+        <h2>Iridium known pools list</h2>
         <i id="pools_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <!--Running pools-->
@@ -57,8 +57,8 @@
                 <td>Stats</td>
                 <td><span id=totalHeight></span></td>
                 <td><span id=totalHashrate></span> <span id=averageWindow></span></td>
-                <td><span id=totalMiners></td>
-                <td><span id=totalLastFound></td>
+                <td><span id=totalMiners></span></td>
+                <td><span id=totalLastFound></span></td>
                 <td><span id=totalPending></span></td>
                 <td><span id=totalDonations></span></td>
                 <td><span id=totalFees></span></td>
@@ -108,17 +108,26 @@
 </div>
 
 <script>
+    // todo : sortable collums on array
     currentPage = {
         destroy: function(){
-            if (xhrGetCurrentPoolStat) xhrGetCurrentPoolStat.abort();
+            if (xhrGetCurrentPoolStat) {
+                xhrGetCurrentPoolStat.abort();
+            }
+            if(typeof poolUpdate !== 'undefined') {
+                clearTimeout(poolUpdate);
+            }
             if(typeof poolPulse !== 'undefined') {
                 clearTimeout(poolPulse);
             }
-            if(typeof poolWheel !== 'undefined') {
-                clearTimeout(poolWheel);
-            }
         },
         init: function (){
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
+            if(typeof tx_wheel !== 'undefined') {
+                clearTimeout(tx_wheel);
+            }
             if ((typeof lastMinedBlockHeader !== 'undefined') && parseInt(lastMinedBlockHeader.block_header.height, 10) !== parseInt($('#blockchainHeight').attr('data-height'), 10)) {
                 $('#blockchainHeight').attr('data-height', lastMinedBlockHeader.block_header.height);
                 getCurrentMinedBlock();
@@ -133,78 +142,80 @@
             }
         }
     };
-
-    var poolData = new Array();
+    var poolUpdate;
+    var poolPulse
+    var poolData = [];
     var xhrGetCurrentPoolStat;
     function fetchPoolData(){
-        fetchedData=new Array()
+        console.log("pool update tick");
+        $('#pools_updated').fadeIn('fast');
+        poolPulse = setTimeout(function() {
+            $('#pools_updated').fadeOut(2000);
+        }, 2000); // <-- time in milliseconds
+
+        fetchedData=[];
         poolData.length=0;
-        for (var i = 0, len = poolList.length; i < len; i++) {
-            if(poolList[i].visible) {
-                fetchedData.length=0;
-                poolData.length=0;
-                xhrGetCurrentPoolStat = $.ajax({
-                    url: poolList[i].api + '/stats',
-                    method: "GET",
-                    dataType: 'json',
-                    cache: 'false',
-                    timeout: 5000,
-                    poolId: poolList[i].id,
-                    poolUrl:poolList[i].url,
-                    poolStatus:poolList[i].status
-                })
-                .done(function (data, status) {
-                    if (data.hasOwnProperty('network')) {
-                        d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
-                        fetchedData.push(d);
-                        $.extend(true, poolData, fetchedData);
-                    } else {
-                        d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
-                        fetchedData.push(d); // not reachable
-                        $.extend(true, poolData, fetchedData);
-                    }
-                    renderPoolData(poolData);
-                })
-                .fail(function (xhrGetCurrentPoolStat, status) {
-                    d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error":status};
-                    fetchedData.push(d); // not reachable
-                    $.extend(true, poolData, fetchedData);
-                    renderPoolData(poolData);
+        for (let i = 0, len = poolList.length; i < len; i++) {
+            if(poolList[i].status) {
+                if (poolList[i].visible) {
+                    fetchedData.length = 0;
+                    poolData.length = 0;
+                    xhrGetCurrentPoolStat = $.ajax({
+                        url: poolList[i].api + '/stats',
+                        method: "GET",
+                        dataType: 'json',
+                        cache: 'false',
+                        timeout: 5000,
+                        poolId: poolList[i].id,
+                        poolUrl: poolList[i].url,
+                        poolStatus: poolList[i].status
+                    })
+                        .done(function (data, status) {
+                            if (data.hasOwnProperty('network')) {
+                                d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
+                                fetchedData.push(d);
+                                $.extend(true, poolData, fetchedData);
+                            } else {
+                                d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error": status};
+                                fetchedData.push(d); // not reachable
+                                $.extend(true, poolData, fetchedData);
+                            }
 
-                })
-                .always(function(){
-                    poolPulse = setTimeout(function () {
-                        // console.log('pool tick');
-                        poolTxUpdate();
-                        renderPoolData(poolData);
-                    }, 35000);
-                });
-            } // end if enabled
-        } // end for
-    }
+                        })
+                        .fail(function (xhrGetCurrentPoolStat, status) {
+                            d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error": status};
+                            fetchedData.push(d); // not reachable
+                            $.extend(true, poolData, fetchedData);
+                            // renderPoolData(poolData);
 
-    // show tx working icon
-    function poolTxUpdate() {
-        var pools_updated = document.getElementById('pools_updated');
-        pools_updated.style.transition = 'opacity 100ms ease-out';
-        pools_updated.style.opacity = 1;
-        // Todo destroy both timeout
-            poolWheel = setTimeout(function () {
-            pools_updated.style.transition = 'opacity 900ms linear';
-            pools_updated.style.opacity = 0;
-        }, 100);
+                        })
+                        .always(function () {
+                            renderPoolData(poolData);
+                        });
+                } // end if enabled
+            } else {
+                fetchedData.length = 0;
+                d = {"id": poolList[i].id, "url": poolList[i].url};
+                fetchedData.push(d); // not reachable
+                $.extend(true, poolData, fetchedData);
+                renderPoolData(poolData);
+            }
+        }
+        poolUpdate = setTimeout(function() {
+            fetchPoolData();
+        }, 35000); // <-- time in milliseconds
     }
 
     function renderPoolData(poolData){
-        var totalMiners = 0;
-        var totalHashrate = 0;
-        var totalHeight = 0;
-        var nbPoolOk = 0;
-        var totalLastFound = 0;
-        var totalPending = 0;
-        var totalDonations = 0;
-        var totalFee = 0 ;
-        for(var i= 0; i < poolData.length; i++){
+        let totalMiners = 0;
+        let totalHashrate = 0;
+        let totalHeight = 0;
+        let nbPoolOk = 0;
+        let totalLastFound = 0;
+        let totalPending = 0;
+        let totalDonations = 0;
+        let totalFee = 0 ;
+        for(let i= 0; i < poolData.length; i++){
             st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
             if (st){
                 height = poolData[i].data.network.height;
@@ -301,7 +312,7 @@
     }
 
     function calculateTotalFee(data) {
-        var totalFee = data.config.fee;
+        let totalFee = data.config.fee;
         if(data.config.hasOwnProperty("coreDonation")){
             totalFee += data.config.donation;
             totalFee += data.config.coreDonation;
@@ -316,7 +327,7 @@
     }
 
     function calculateDonations(data) {
-        var totalDonations = 0;
+        let totalDonations = 0;
         if(data.config.hasOwnProperty("coreDonation")){
             totalDonations += data.config.donation;
             totalDonations += data.config.coreDonation;
@@ -331,8 +342,8 @@
     }
 
     function calculatePending(data) {
-        totalPending = 0
-        for(var i= 0; i < data.pool.blocks.length; i++) {
+        totalPending = 0;
+        for(let i= 0; i < data.pool.blocks.length; i++) {
             if((i+1) % 2 == 0){
                 if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
                     totalPending++;
@@ -368,7 +379,6 @@
                     $('#networkHashrate').attr('data-globalHR', currentMinedBlock.difficulty / coinDifficultyTarget);
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
-                    // fetchPoolData();
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();
@@ -381,6 +391,7 @@
                 }
             });
     }
+
     var xhrGetLastBlocks;
     function getBlocks(heightAsked) {
         if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
@@ -408,6 +419,7 @@
                     $('#loading').hide();
                 }
                 fetchPoolData();
+
             })
             .fail(function (xhrGetLastBlocks, textStatus) {
                 if (textStatus != "abort") {

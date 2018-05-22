@@ -79,7 +79,7 @@
     function getLastMinedBlockHeader() {
         if (xhrGetLastMinedBlockHeader) xhrGetLastMinedBlockHeader.abort();
         xhrGetLastMinedBlockHeader = $.ajax({
-            timeout: 3000,
+            timeout: 5000,
             url: api + '/json_rpc',
             method: "POST",
             data: JSON.stringify({
@@ -138,7 +138,7 @@
             })
             .always(function () {
                 refreshAll = setTimeout(function () {
-                    // console.log('tick');
+                    console.log('global polling tick');
                     fetchLiveLastMinedBlockHeader();
                 }, 60000);
             })
@@ -183,11 +183,11 @@
 
     // show working icon
     function pulseLiveUpdate() {
-        var stats_update = document.getElementById('stats_updated');
+        const stats_update = document.getElementById('stats_updated');
         stats_update.style.transition = 'opacity 100ms ease-out';
         stats_update.style.opacity = 1;
         setTimeout(function () {
-            stats_update.style.transition = 'opacity 5000ms linear';
+            stats_update.style.transition = 'opacity 10000ms linear';
             stats_update.style.opacity = 0;
         }, 100);
     }
@@ -195,19 +195,21 @@
     // update text by id
     function updateText(e, t) {
         // console.log("e: " + e + " t: " + t); //debug updatetext
-        var el = document.getElementById(e);
-        if (el.textContent !== t) {
-            el.textContent = t;
+        let el = document.getElementById(e);
+        if(el != null){
+            if (el.textContent !== t) {
+                el.textContent = t;
+            }
         }
-        return el;
     }
 
-    function updateTextLinkable(elementId, text){
-        var el = document.getElementById(elementId);
-        if (el.innerHTML !== text){
-            el.innerHTML = text;
+    function updateTextLinkable(e, t){
+        let el = document.getElementById(e);
+        if(el != null) {
+            if (el.innerHTML !== t) {
+                el.innerHTML = t;
+            }
         }
-        return el;
     }
 
     // handle url hash click
@@ -223,8 +225,8 @@
 
     // do I have to explain ?
     function getReadableHashRateString(h) {
-        var i = 0;
-        var byteUnits = [' H/s', ' kH/s', ' Mh/s', ' Gh/s', ' TH/s', ' PH/s'];
+        let i = 0;
+        let byteUnits = [' H/s', ' kH/s', ' Mh/s', ' Gh/s', ' TH/s', ' PH/s'];
         while (h > 1000) {
             h = h / 1000;
             i++;
@@ -236,7 +238,7 @@
     function shortenLargeNumber(num, digits, withoutSymbol) {
         var units = ['k', 'M'], decimal;
 
-        for (var i = units.length - 1; i >= 0; i--) {
+        for (let i = units.length - 1; i >= 0; i--) {
             decimal = Math.pow(1000, i + 1);
             if (num <= -decimal || num >= decimal) {
                 return +(num / decimal).toFixed(digits) + units[i] + (withoutSymbol ? '' : (' ' + symbol));
@@ -267,13 +269,13 @@
     }
 
     urlParam = function(name){
-        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        let results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
         if (results==null){
             return null;
         } else {
             return results[1] || 0;
         }
-    }
+    };
 
     // trigger alert
     function showalert(alerttype, title, message) {
@@ -291,6 +293,11 @@
             $('#alert_placeholder').hide();
         }, 5000);
     }
+    //close menu on mobile
+    $('.navbar-nav>li>a').on('click', function(){
+        $('.navbar-collapse').collapse('hide');
+    });
+
 </script>
 </body>
 </html>

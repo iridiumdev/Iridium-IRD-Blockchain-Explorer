@@ -100,9 +100,10 @@ footer {
 }
 
 #pools_updated{
-    opacity: 0;
+    /*opacity: 0;*/
     float: right;
     font-size: 0.9em;
+    margin-top: -18px;
 }
 
 /*forms*/

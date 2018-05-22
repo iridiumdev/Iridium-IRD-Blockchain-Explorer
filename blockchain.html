@@ -69,6 +69,18 @@
             if (xhrGetLastBlocks) xhrGetLastBlocks.abort();
         },
         init: function (){
+            if(typeof poolUpdate !== 'undefined') {
+                clearTimeout(poolUpdate);
+            }
+            if(typeof poolPulse !== 'undefined') {
+                clearTimeout(poolPulse);
+            }
+            if(typeof txPulse !== 'undefined') {
+                clearTimeout(txPulse);
+            }
+            if(typeof tx_wheel !== 'undefined') {
+                clearTimeout(tx_wheel);
+            }
             currentPage.update();
         },
         update: function () {
@@ -103,7 +115,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    currentMinedBlock = data.result;
+                    let currentMinedBlock = data.result;
                     updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
@@ -145,7 +157,7 @@
         })
             .done(function (data) {
                 if (data.hasOwnProperty('result')) {
-                    lastBlocksList = data.result.blocks;
+                    let lastBlocksList = data.result.blocks;
                     renderBlocks(lastBlocksList);
                     $('#loading').hide();
                 } else {
@@ -163,36 +175,36 @@
 
     // Handle Blocks list
     function renderBlocks(blocksResults){
-        sumDiff = 0;
-        totalblocks = 0;
-        $blocksRows = $('#blocks_rows');
-        for ( i = 0; i < blocksResults.length; i ++){
-            block = blocksResults[i];
-            blockJson = JSON.stringify(block);
-            existingRow = document.getElementById('blockRow' + block.height);
+        let sumDiff = 0;
+        let totalblocks = 0;
+        let blocksRows = $('#blocks_rows');
+        for ( let i = 0; i < blocksResults.length; i ++){
+            let block = blocksResults[i];
+            let blockJson = JSON.stringify(block);
+            let existingRow = document.getElementById('blockRow' + block.height);
             if (existingRow && existingRow.getAttribute('data-json') !== blockJson){
                 $(existingRow).replaceWith(getBlockRowElement(block, blockJson));
             }
             else if (!existingRow){
-                blockElement = getBlockRowElement(block, blockJson);
-                inserted = false;
-                rows = $blocksRows.children().get();
-                for (f = 0; f < rows.length; f++) {
-                    bHeight = parseInt(rows[f].getAttribute('data-height'));
+                const blockElement = getBlockRowElement(block, blockJson);
+                let inserted = false;
+                const rows = blocksRows.children().get();
+                for (let f = 0; f < rows.length; f++) {
+                    const bHeight = parseInt(rows[f].getAttribute('data-height'));
                     if (bHeight < block.height){
-                        inserted = true;
+                        let inserted = true;
                         $(rows[f]).before(blockElement);
                         break;
                     }
                 }
                 if (!inserted) {
                     totalblocks++;
-                    $blocksRows.append(blockElement);
+                    blocksRows.append(blockElement);
                 }
             }
             sumDiff += blocksResults[i].difficulty;
         }
-        averageHashRate = sumDiff / totalblocks;
+        let averageHashRate = sumDiff / totalblocks;
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
         updateText('nb_blocks', totalblocks);
         $('#loadMoreBlocks').removeClass('invisible');
@@ -200,13 +212,13 @@
 
     function getBlockRowElement(block,jsonString) {
 
-        row = document.createElement('tr');
+        const row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
         row.setAttribute('data-height', block.height);
         row.setAttribute('id', 'blockRow' + block.height);
         row.setAttribute('title', block.hash);
 
-        columns =
+        const columns =
             '<td>' + block.height + '</td>' +
             '<td>' + block.difficulty + '</td>' +
             '<td>' + formatBlockLink(block.hash) + '</td>' +
@@ -220,7 +232,7 @@
     // search
     $('#btn_search').click(function(e) {
         console.warn('search !');
-        text = document.getElementById('txt_search').value;
+        const text = document.getElementById('txt_search').value;
 
         // by height
         var xhrGetSearchBlockbyHeight;
@@ -243,7 +255,7 @@
                 .done(function (data) {
                     console.log(data);
                     if (data.hasOwnProperty('result')) {
-                        block = data.result.block_header;
+                        let block = data.result.block_header;
                         window.location.href = getBlockchainUrl(block.hash);
                     } else {
                         showalert('alert-danger','Core error : ',data.error.message);
