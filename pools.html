@@ -227,7 +227,7 @@
                 donation = calculateDonations(poolData[i].data);
                 fee = calculateTotalFee(poolData[i].data);
                 // test if pool is synced
-                if(Math.abs(parseInt($('#blockchainHeight').attr('data-height'), 10) - poolData[i].data.network.height) > 2){
+                if(Math.abs(parseInt($('#blockchainHeight').attr('data-height'), 10) - poolData[i].data.network.height) > 3){
                     hashrate = 'N/A'; // not synced
                     miners = 'N/A';
                     pending = 'N/A';
