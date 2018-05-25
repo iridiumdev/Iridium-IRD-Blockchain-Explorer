@@ -23,7 +23,8 @@ const poolList = [
     {"id":13,"visible":true,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":false},
     {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://mig.ird.cash/io","status":false},
     {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true},
-    {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me","api":"https://mig.ird.cash/coinpoolit","status":true}
+    {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me","api":"https://mig.ird.cash/coinpoolit","status":true},
+    {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":true}
 
 ];
 const seedsNodes = [
