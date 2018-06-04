@@ -30,7 +30,7 @@ const poolList = [
 
 ];
 const seedsNodes = [
-    {"id":"rbx","url":"http://ns3024204.ip-178-33-231.eu"},
-    {"id":"mtl","url":"http://ns523581.ip-158-69-127.net"},
-    {"id":"sdn","url":"http://ns543550.ip-139-99-131.net"},
+    {"id":"rbx","url":"https://ns3024204.ip-178-33-231.eu"},
+    {"id":"mtl","url":"https://ns523581.ip-158-69-127.net"},
+    {"id":"sdn","url":"https://ns543550.ip-139-99-131.net"},
 ];
