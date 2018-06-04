@@ -3,14 +3,14 @@
         <div class="cardpad card">
             <div class="card-header">
                 <h2>Network status</h2>
-                <div class="nodes float-right d-none">
-                    <div id="sdn" class="float-right" title="Sydney seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                <div class="nodes float-right">
+                    <div id="sdn" class="float-right" title="SDN nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
                         <i class="fas fa-plug"></i>
                     </div>
-                    <div id="mtl" class="float-right" title="Montreal seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                    <div id="mtl" class="float-right" title="MTL nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
                         <i class="fas fa-plug"></i>
                     </div>
-                    <div id="rbx" class="float-right" title="Roubaix seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
+                    <div id="rbx" class="float-right" title="RBX seed nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
                         <i class="fas fa-plug"></i>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
                 getBlocks();
                 getTxPool();
             }
-            // getSeedsStatus();
+            getSeedsStatus();
         }
     };
 
@@ -178,7 +178,7 @@
                 method: "GET",
                 dataType: 'json',
                 cache: 'false',
-                timeout: 5000,
+                timeout: 15000,
                 servId: seedsNodes[i].id,
             })
                 .done(function (data) {
@@ -215,7 +215,7 @@
                     $('#'+servId).addClass('text-success');
                 }
 
-                $('#'+servId).attr('data-content', seedInfo);
+                $('#'+servId).attr('data-content', '<pre>'+seedInfo+'</pre>');
             }
         }
     }

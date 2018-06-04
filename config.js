@@ -6,7 +6,7 @@ const coinUnits=100000000;
 const blockchainExplorer = "?hash={id}#block";
 const transactionExplorer = "?hash={id}#transaction";
 
-// poolList ["enabled", "url", "api", "status"]
+// poolList ["id","visible", "url", "api", "enabled"]
 const poolList = [
     {"id":1,"visible":true,"url":"https://irdpool.fr","api":"https://irdpool.fr:8117","status":true},
     {"id":2,"visible":true,"url":"https://irdpool.eu","api":"https://irdpool.eu:8443","status":true},
@@ -30,7 +30,7 @@ const poolList = [
 
 ];
 const seedsNodes = [
-    {"id":"rbx","url":"https://mig.ird.cash/rbx"},
-    {"id":"mtl","url":"https://mig.ird.cash/mtl"},
-    {"id":"sdn","url":"https://mig.ird.cash/sdn"},
+    {"id":"rbx","url":"http://ns3024204.ip-178-33-231.eu"},
+    {"id":"mtl","url":"http://ns523581.ip-158-69-127.net"},
+    {"id":"sdn","url":"http://ns543550.ip-139-99-131.net"},
 ];

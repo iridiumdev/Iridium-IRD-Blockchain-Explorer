@@ -222,6 +222,13 @@
                 hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate);
                 poolCoeff=poolData[i].data.pool.hashrate/$('#networkHashrate').attr('data-globalHR');
                 miners = poolData[i].data.pool.miners;
+
+                    if(poolData[i].id == 19){
+                        // console.warn(poolData[i].data.pool.lastBlockFound);
+                        console.warn(poolData[i]);
+                    }
+
+
                 blocTimeAgo = jQuery.timeago(new Date(parseInt(poolData[i].data.pool.lastBlockFound)));
                 pending = calculatePending(poolData[i].data);
                 donation = calculateDonations(poolData[i].data);
@@ -345,6 +352,7 @@
         totalPending = 0;
         for(let i= 0; i < data.pool.blocks.length; i++) {
             if((i+1) % 2 == 0){
+                console.log(i);
                 if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
                     totalPending++;
                 }
