@@ -8,26 +8,26 @@ const transactionExplorer = "?hash={id}#transaction";
 
 // poolList ["id","visible", "url", "api", "enabled"]
 const poolList = [
-    {"id":1,"visible":true,"url":"https://irdpool.fr","api":"https://irdpool.fr:8117","status":true},
-    {"id":2,"visible":true,"url":"https://irdpool.eu","api":"https://irdpool.eu:8443","status":true},
-    {"id":3,"visible":true,"url":"https://irdpool.ca","api":"https://irdpool.ca:8117","status":true},
-    {"id":4,"visible":true,"url":"https://irdpool.net","api":"https://irdpool.net:8117","status":true},
-    {"id":5,"visible":true,"url":"https://irdpool.de","api":"https://irdpool.de/api","status":false},
-    {"id":6,"visible":true,"url":"https://cryptoknight.cc/iridium","api":"https://cryptoknight.cc/rpc/iridium","status":true},
-    {"id":7,"visible":true,"url":"https://mineallcrypto.com/iridium","api":"https://mineallcrypto.com/iridium/pool","status":false},
+    {"id":1,"visible":true,"url":"https://irdpool.fr","api":"https://irdpool.fr:8117","status":true,"flag":"FR"},
+    {"id":2,"visible":true,"url":"https://irdpool.eu","api":"https://irdpool.eu:8443","status":true,"flag":"FR"},
+    {"id":3,"visible":true,"url":"https://irdpool.ca","api":"https://irdpool.ca:8117","status":true,"flag":"CA"},
+    {"id":4,"visible":true,"url":"https://irdpool.net","api":"https://irdpool.net:8117","status":true,"flag":"AU"},
+    {"id":5,"visible":true,"url":"https://irdpool.de","api":"https://irdpool.de/api","status":false,"flag":"DE"},
+    {"id":6,"visible":true,"url":"https://cryptoknight.cc/iridium","api":"https://cryptoknight.cc/rpc/iridium","status":true,"flag":"DE"},
+    {"id":7,"visible":true,"url":"https://mineallcrypto.com/iridium","api":"https://mineallcrypto.com/iridium/pool","status":false,"flag":"RU"},
     {"id":8,"visible":true,"url":"http://ird.cashpool.us","api":"https://mig.ird.cash/cashpool","status":false},
     {"id":9,"visible":true,"url":"http://irdpool.tk","api":"https://mig.ird.cash/tk","status":false},
-    {"id":10,"visible":true,"url":"http://irdpool.ru","api":"https://mig.ird.cash/ru","status":true},
-    {"id":11,"visible":true,"url":"http://iridiumpool.duckdns.org","api":"https://mig.ird.cash/nl","status":true},
-    {"id":12,"visible":true,"url":"http://irdpool.online","api":"https://mig.ird.cash/onl","status":true},
+    {"id":10,"visible":true,"url":"http://irdpool.ru","api":"https://mig.ird.cash/ru","status":true,"flag":"RU"},
+    {"id":11,"visible":true,"url":"http://iridiumpool.duckdns.org","api":"https://mig.ird.cash/nl","status":true,"flag":"NL"},
+    {"id":12,"visible":true,"url":"http://irdpool.online","api":"https://mig.ird.cash/onl","status":true,"flag":"RU"},
     {"id":13,"visible":true,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":false},
     {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://mig.ird.cash/io","status":false},
-    {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true},
-    {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me","api":"https://mig.ird.cash/coinpoolit","status":true},
-    {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":true},
-    {"id":18,"visible":true,"url":"https://iridium.clevery.xyz","api":"https://iridium.clevery.xyz/api","status":true},
-    {"id":19,"visible":true,"url":"http://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true},
-    {"id":20,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true}
+    {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true,"flag":"ID"},
+    {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me","api":"https://mig.ird.cash/coinpoolit","status":true,"flag":"IT"},
+    {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":true,"flag":"DE"},
+    {"id":18,"visible":true,"url":"https://iridium.clevery.xyz","api":"https://iridium.clevery.xyz/api","status":true,"flag":"FR"},
+    {"id":19,"visible":true,"url":"http://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES"},
+    {"id":20,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true,"flag":"SG"}
 
 ];
 const seedsNodes = [

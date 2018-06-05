@@ -168,11 +168,12 @@
                         timeout: 5000,
                         poolId: poolList[i].id,
                         poolUrl: poolList[i].url,
-                        poolStatus: poolList[i].status
+                        poolStatus: poolList[i].status,
+                        poolFlag: poolList[i].flag
                     })
                         .done(function (data, status) {
                             if (data.hasOwnProperty('network')) {
-                                d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, data};
+                                d = {"id": this.poolId, "url": this.poolUrl, "status": this.poolStatus, "flag":this.poolFlag, data};
                                 fetchedData.push(d);
                                 $.extend(true, poolData, fetchedData);
                             } else {
@@ -222,13 +223,6 @@
                 hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate);
                 poolCoeff=poolData[i].data.pool.hashrate/$('#networkHashrate').attr('data-globalHR');
                 miners = poolData[i].data.pool.miners;
-
-                    if(poolData[i].id == 19){
-                        // console.warn(poolData[i].data.pool.lastBlockFound);
-                        console.warn(poolData[i]);
-                    }
-
-
                 blocTimeAgo = jQuery.timeago(new Date(parseInt(poolData[i].data.pool.lastBlockFound)));
                 pending = calculatePending(poolData[i].data);
                 donation = calculateDonations(poolData[i].data);
@@ -250,8 +244,8 @@
 
                         $('#out_rows').append('<tr>' +
                             '<td id=host-' + poolData[i].id + '>' +
-                            '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i>'+
-                            ' <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                            '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle"></i>'+
+                            ' <a target=blank href=' + poolData[i].url + '>flag' + poolData[i].url + '</a></td>' +
                             '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                             '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                             '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
@@ -261,7 +255,6 @@
                             '<td id=totalFee-' + poolData[i].id + '>' + fee + '%</td>' +
                             '</tr>');
                     }
-                    $("#flag-"+poolData[i].id).removeClass("invisible");
                     $('#out_table').removeClass('d-none');
 
                 } else { //synced
@@ -286,10 +279,16 @@
                     updateText('totalFee-'+poolData[i].id, fee);
                 } else {
 
+                // <span data-toggle="popover" data-trigger="hover" data-placement="top"
+                //     data-content="Current mined block height">
+                //         <i class="fa fa-bars"></i> Height: <span id="blockchainHeight" data-height="0"></span>
+                //     </span>
+
+                    flag = poolData[i].flag != undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag+'.svg">' : '';
+
                     $('#pool_rows').append('<tr>' +
                         '<td id=host-' + poolData[i].id + '>' +
-                        '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i>'+
-                        ' <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
+                        '<a target=blank href='+ poolData[i].url + '>'+ flag + ' ' + poolData[i].url + '</a></td>' +
                         '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                         '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                         '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +

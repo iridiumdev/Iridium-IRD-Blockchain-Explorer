@@ -164,6 +164,11 @@ footer {
     padding: .45rem !important;
 }
 
+.flag{
+    height: 12px;
+    margin-top: -3px;
+}
+
 #rbx{
     /*color: #00FF00;*/
     font-size: 1.2em;
