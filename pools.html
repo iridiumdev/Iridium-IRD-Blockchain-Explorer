@@ -284,7 +284,7 @@
                 //         <i class="fa fa-bars"></i> Height: <span id="blockchainHeight" data-height="0"></span>
                 //     </span>
 
-                    flag = poolData[i].flag != undefined ? '<img class="flag invisible" src="images/flags/'+poolData[i].flag+'.svg">' : '';
+                    flag = poolData[i].flag != undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag.toLowerCase()+'.svg">' : '';
 
                     $('#pool_rows').append('<tr>' +
                         '<td id=host-' + poolData[i].id + '>' +
