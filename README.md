@@ -23,7 +23,7 @@ This is the new version of the iridium block explorer, network status and pool l
   * [ ] small difficulty graph for last 31 blocks
   * [x] search field for blk or tx
   * [ ] search by payment ID
-  * [ ] add nodes status/versions
+  * [x] add nodes status/versions
   * [ ] remove url variable
 
 * blockchain
@@ -45,6 +45,8 @@ This is the new version of the iridium block explorer, network status and pool l
 * pools
   * [x] pools list
   * [x] overall stats
+  * [x] country flags
+  * [x] country hover link
   * [ ] order by hashrate/miners...
   * [ ] map of pools (geoip)
 
