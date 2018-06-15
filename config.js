@@ -27,6 +27,7 @@ const poolList = [
     {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":true,"flag":"DE","loc":"Germany"},
     {"id":18,"visible":true,"url":"https://iridium.clevery.xyz","api":"https://iridium.clevery.xyz/api","status":true,"flag":"FR","loc":"France"},
     {"id":19,"visible":true,"url":"http://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES","loc":"Spain"},
+    {"id":21,"visible":true,"url":"http://ird.cnpools.space","api":"https://mig.ird.cash/ny","status":true,"flag":"US","loc":"New-York"},
     {"id":20,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true,"flag":"SG","loc":"Singapore"}
 
 ];
