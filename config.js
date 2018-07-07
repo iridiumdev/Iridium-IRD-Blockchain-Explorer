@@ -20,7 +20,7 @@ const poolList = [
     {"id":10,"visible":true,"url":"http://irdpool.ru","api":"https://mig.ird.cash/ru","status":true,"flag":"RU","loc":"Russia"},
     {"id":11,"visible":true,"url":"http://iridiumpool.duckdns.org","api":"https://mig.ird.cash/nl","status":true,"flag":"NL","loc":"Netherlands"},
     {"id":12,"visible":true,"url":"http://irdpool.online","api":"https://mig.ird.cash/onl","status":true,"flag":"RU","loc":"Russia"},
-    {"id":13,"visible":true,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":false},
+    {"id":13,"visible":false,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":false},
     {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://mig.ird.cash/io","status":false},
     {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true,"flag":"ID","loc":"Indonesia"},
     {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me","api":"https://mig.ird.cash/coinpoolit","status":true,"flag":"IT","loc":"Italy"},
@@ -30,7 +30,8 @@ const poolList = [
     {"id":20,"visible":true,"url":"https://iridium.cnpools.space","api":"https://cnpools.dedyn.io:18119","status":true,"flag":"US","loc":"New-York"},
     {"id":21,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true,"flag":"SG","loc":"Singapore"},
     {"id":22,"visible":true,"url":"http://iridium.miningpoolhouse.com","api":"https://mig.ird.cash/mph","status":true,"flag":"DE","loc":"Germany"},
-    {"id":23,"visible":true,"url":"https://ird.codpool.com","api":"https://pool1.codpool.com:8118","status":true,"flag":"US","loc":"New-York"}
+    {"id":23,"visible":true,"url":"https://ird.codpool.com","api":"https://pool1.codpool.com:8118","status":true,"flag":"US","loc":"New-York"},
+    {"id":24,"visible":true,"url":"http://ird.wahaobi.com","api":"https://mig.ird.cash/hk","status":true,"flag":"CN","loc":"Hong Kong"}
 
 ];
 const seedsNodes = [
