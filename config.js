@@ -31,7 +31,9 @@ const poolList = [
     {"id":21,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true,"flag":"SG","loc":"Singapore"},
     {"id":22,"visible":true,"url":"http://iridium.miningpoolhouse.com","api":"https://mig.ird.cash/mph","status":true,"flag":"DE","loc":"Germany"},
     {"id":23,"visible":true,"url":"https://ird.codpool.com","api":"https://pool1.codpool.com:8118","status":true,"flag":"US","loc":"New-York"},
-    {"id":24,"visible":true,"url":"http://ird.wahaobi.com","api":"https://mig.ird.cash/hk","status":true,"flag":"CN","loc":"Hong Kong"}
+    {"id":24,"visible":true,"url":"http://ird.wahaobi.com","api":"https://mig.ird.cash/hk","status":true,"flag":"CN","loc":"Hong Kong"},
+    {"id":25,"visible":true,"url":"https://iridium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019","status":true,"flag":"US","loc":"Tennessee"}
+
 
 ];
 const seedsNodes = [

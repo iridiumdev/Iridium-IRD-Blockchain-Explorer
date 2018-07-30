@@ -188,8 +188,6 @@
                             d = {"id": this.poolId, "url": this.poolUrl, "status": false, "error": status};
                             fetchedData.push(d); // not reachable
                             $.extend(true, poolData, fetchedData);
-                            // renderPoolData(poolData);
-
                         })
                         .always(function () {
                             renderPoolData(poolData);
@@ -228,6 +226,8 @@
                 pending = calculatePending(poolData[i].data);
                 donation = calculateDonations(poolData[i].data);
                 fee = calculateTotalFee(poolData[i].data);
+                flag = poolData[i].flag != undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag.toLowerCase()+'.svg">' : '';
+                loc = poolData[i].loc != undefined ? 'data-toggle="popover" data-trigger="hover" data-placement="top" data-content="'+poolData[i].loc+'" ' : '';
                 // test if pool is synced
                 if(Math.abs(parseInt($('#blockchainHeight').attr('data-height'), 10) - poolData[i].data.network.height) > 3){
                     hashrate = 'N/A'; // not synced
@@ -246,7 +246,8 @@
                         $('#out_rows').append('<tr>' +
                             '<td id=host-' + poolData[i].id + '>' +
                             '<i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle"></i>'+
-                            ' <a target=blank href=' + poolData[i].url + '>flag' + poolData[i].url + '</a></td>' +
+                            // ' <a target=blank href=' + poolData[i].url + '>flag' + poolData[i].url + '</a></td>' +
+                            '<a '+loc+'target=blank href='+ poolData[i].url + '>'+ flag + ' ' + poolData[i].url + '</a></td>' +
                             '<td id=height-' + poolData[i].id + '>' + height + '</td>' +
                             '<td id=hashrate-' + poolData[i].id + '>' + hashrate + '</td>' +
                             '<td id=miners-' + poolData[i].id + '>' + miners + '</td>' +
@@ -259,7 +260,6 @@
                     $('#out_table').removeClass('d-none');
 
                 } else { //synced
-                    $("#flag-"+poolData[i].id).addClass("invisible");
                     nbPoolOk += 1;
                     totalHeight += height;
                     totalHashrate += poolData[i].data.pool.hashrate;
@@ -279,10 +279,6 @@
                     updateText('donation-'+poolData[i].id, donation);
                     updateText('totalFee-'+poolData[i].id, fee);
                 } else {
-
-                    flag = poolData[i].flag != undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag.toLowerCase()+'.svg">' : '';
-                    loc = poolData[i].loc != undefined ? 'data-toggle="popover" data-trigger="hover" data-placement="top" data-content="'+poolData[i].loc+'" ' : '';
-
                     $('#pool_rows').append('<tr>' +
                         '<td id=host-' + poolData[i].id + '>' +
                         '<a '+loc+'target=blank href='+ poolData[i].url + '>'+ flag + ' ' + poolData[i].url + '</a></td>' +
@@ -301,6 +297,7 @@
                     $('#dead_rows').append('<tr colspan="8">' +
                         '<td id=host-' + poolData[i].id + '><i id="flag-' + poolData[i].id + '" class="fas fa-exclamation-circle invisible"></i> <a target=blank href=' + poolData[i].url + '>' + poolData[i].url + '</a></td>' +
                         '</tr>');
+                    $("#flag-"+poolData[i].id).removeClass("invisible");
                     $('#dead_table').removeClass('d-none');
                 }
             }
