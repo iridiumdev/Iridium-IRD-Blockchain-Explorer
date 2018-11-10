@@ -192,7 +192,7 @@
                 for (let f = 0; f < rows.length; f++) {
                     const bHeight = parseInt(rows[f].getAttribute('data-height'));
                     if (bHeight < block.height){
-                        let inserted = true;
+                        inserted = true;
                         $(rows[f]).before(blockElement);
                         break;
                     }
