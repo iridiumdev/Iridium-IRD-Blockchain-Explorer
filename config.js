@@ -26,7 +26,7 @@ const poolList = [
     {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me/ird","api":"https://mig.ird.cash/coinpoolit","status":true,"flag":"IT","loc":"Italy"},
     {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":false,"flag":"DE","loc":"Germany"},
     {"id":18,"visible":true,"url":"https://iridium.clevery.xyz","api":"https://iridium.clevery.xyz/api","status":true,"flag":"FR","loc":"France"},
-    {"id":19,"visible":true,"url":"http://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES","loc":"Spain"},
+    {"id":19,"visible":true,"url":"https://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES","loc":"Spain"},
     {"id":20,"visible":true,"url":"https://iridium.cnpools.space","api":"https://iridium.cnpools.space:8119","status":true,"flag":"US","loc":"New-York"},
     // {"id":21,"visible":true,"url":"http://irdpool.cryptonine.my","api":"https://mig.ird.cash/cryptonine","status":true,"flag":"SG","loc":"Singapore"},
     {"id":22,"visible":true,"url":"http://iridium.miningpoolhouse.com","api":"https://mig.ird.cash/mph","status":false,"flag":"DE","loc":"Germany"},
