@@ -21,7 +21,7 @@
             </div>
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
-                      data-content="On the last visible blocks">
+                      data-content="On the last 31 blocks">
                         <i class="fas fa-percent"></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
             </div>
@@ -175,8 +175,6 @@
 
     // Handle Blocks list
     function renderBlocks(blocksResults){
-        let sumDiff = 0;
-        let totalblocks = 0;
         let blocksRows = $('#blocks_rows');
         for ( let i = 0; i < blocksResults.length; i ++){
             let block = blocksResults[i];
@@ -198,15 +196,29 @@
                     }
                 }
                 if (!inserted) {
-                    totalblocks++;
                     blocksRows.append(blockElement);
                 }
             }
-            sumDiff += blocksResults[i].difficulty;
         }
-        let averageHashRate = sumDiff / totalblocks;
+
+        let sumDiffLastVisible = 0;
+        let avgHashrateBlockCount = 31;
+
+        const rows = blocksRows.children().get();
+
+        if (rows.length < avgHashrateBlockCount) {
+            console.warn(`Currently less than ${avgHashrateBlockCount} blocks rendered! Reducing block count for average hashrate calculation to ${rows.length} to avoid index out of bounds!`);
+            avgHashrateBlockCount = rows.length
+        }
+
+        for (let f = 0; f < avgHashrateBlockCount; f++) {
+            const block = JSON.parse(rows[f].getAttribute('data-json'));
+            sumDiffLastVisible += block.difficulty
+        }
+
+        let averageHashRate = sumDiffLastVisible / avgHashrateBlockCount;
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
-        updateText('nb_blocks', totalblocks);
+        updateText('nb_blocks', rows.length);
         $('#loadMoreBlocks').removeClass('invisible');
     }
 
