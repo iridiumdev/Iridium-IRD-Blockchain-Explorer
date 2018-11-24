@@ -15,7 +15,7 @@
 </head>
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top">
-        <a class="navbar-brand" href="#" data-page="home.html">
+        <a id="home" class="navbar-brand" href="#" data-page="home.html">
             <img class="logo-small img-fluid" src="images/64x64.png" alt="Iridium logo">
             Iridium Explorer
         </a>
@@ -26,11 +26,11 @@
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#" data-page="home.html"><i class="fa fa-home"></i>
+                    <a id="home1" class="nav-link hot_link" href="#" data-page="home.html"><i class="fa fa-home"></i>
                         Home<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#blockchain" data-page="blockchain.html"><i
+                    <a id="block" class="nav-link hot_link" href="#blockchain" data-page="blockchain.html"><i
                             class="fa fa-cubes"></i> Blockchain</a>
                 </li>
                 <!--<li class="nav-item">-->
@@ -38,7 +38,7 @@
                         <!--Market</a>-->
                 <!--</li>-->
                 <li class="nav-item">
-                    <a class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
+                    <a id="pools" class="nav-link hot_link" href="#pools" data-page="pools.html"><i class="fas fa-tasks"></i> Pools</a>
                 </li>
                 <!--<li class="nav-item">-->
                     <!--<a class="nav-link hot_link" href="#stats" data-page="stats.html"><i class="fas fa-chart-area"></i>-->
@@ -154,7 +154,6 @@
     var currentPage;
 
     // page router
-    // todo : remover url get variable when not necessary
     function routePage(loadedCallback) {
         if (currentPage) currentPage.destroy();
         $('#page').html('');

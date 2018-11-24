@@ -34,9 +34,13 @@ const poolList = [
     {"id":24,"visible":true,"url":"http://ird.wahaobi.com","api":"https://mig.ird.cash/hk","status":false,"flag":"CN","loc":"Hong Kong"},
     {"id":25,"visible":true,"url":"https://iridium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019","status":true,"flag":"US","loc":"Tennessee"},
     {"id":26,"visible":true,"url":"https://ird.semipool.com","api":"https://mig.ird.cash/semipool","status":true,"flag":"FR","loc":"France"}
-
-
 ];
+const mmList = [
+    {"id":1,"visible":true,"pair":"aeon",url:"https://aeon.semipool.com","api":"https://aeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
+    {"id":2,"visible":true,"pair":"aeon",url:"https://xtri.semipool.com","api":"https://xtri.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
+    {"id":3,"visible":true,"pair":"aeon",url:"https://webarq.semipool.com","api":"https://webarq.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"}
+];
+
 const seedsNodes = [
     {"id":"rbx","url":"https://ns3024204.ip-178-33-231.eu"},
     {"id":"mtl","url":"https://ns523581.ip-158-69-127.net"},

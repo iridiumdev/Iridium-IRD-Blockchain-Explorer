@@ -125,6 +125,10 @@
 <script>
     currentPage = {
         init: function (){
+            $("#home")[0].search = "";
+            $("#home1")[0].search = "";
+            $("#block")[0].search = "";
+            $("#pools")[0].search = "";
             if(typeof poolUpdate !== 'undefined') {
                 clearTimeout(poolUpdate);
             }
