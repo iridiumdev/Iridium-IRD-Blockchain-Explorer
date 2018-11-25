@@ -36,8 +36,8 @@ const poolList = [
     {"id":26,"visible":true,"url":"https://ird.semipool.com","api":"https://mig.ird.cash/semipool","status":false,"flag":"FR","loc":"France"}
 ];
 const mmList = [
-    {"id":1,"visible":true,"pair":"AEON",url:"https://aeon.semipool.com","api":"https://aeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
-    {"id":2,"visible":true,"pair":"XTRI",url:"https://xtri.semipool.com","api":"https://xtri.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
+    {"id":1,"visible":true,"pair":"AEON",url:"https://webaeon.semipool.com","api":"https://webaeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
+    {"id":2,"visible":true,"pair":"XTRI",url:"https://webxtri.semipool.com","api":"https://webxtri.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
     {"id":3,"visible":true,"pair":"ARQ",url:"https://webarq.semipool.com","api":"https://webarq.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"}
 ];
 
