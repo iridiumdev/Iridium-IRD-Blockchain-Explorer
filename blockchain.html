@@ -119,6 +119,7 @@
                     updateText('networkHashrate', getReadableHashRateString(currentMinedBlock.difficulty / coinDifficultyTarget));
                     updateText('nextDifficulty', currentMinedBlock.difficulty.toString());
                     updateText('blockchainHeight', currentMinedBlock.height);
+                    $('#blockchainHeight').attr('data-height', currentMinedBlock.height);
                 } else {
                     showalert('alert-danger','Core error : ',data.error.message);
                     $('#loading').hide();

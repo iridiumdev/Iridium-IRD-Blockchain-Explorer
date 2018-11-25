@@ -33,7 +33,7 @@ const poolList = [
     {"id":23,"visible":true,"url":"https://ird.codpool.com","api":"https://pool1.codpool.com:8118","status":true,"flag":"US","loc":"New-York"},
     {"id":24,"visible":true,"url":"http://ird.wahaobi.com","api":"https://mig.ird.cash/hk","status":false,"flag":"CN","loc":"Hong Kong"},
     {"id":25,"visible":true,"url":"https://iridium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019","status":true,"flag":"US","loc":"Tennessee"},
-    {"id":26,"visible":true,"url":"https://ird.semipool.com","api":"https://mig.ird.cash/semipool","status":false,"flag":"FR","loc":"France"}
+    {"id":26,"visible":true,"url":"https://webird.semipool.com","api":"https://mig.ird.cash/semipool","status":false,"flag":"FR","loc":"France"}
 ];
 const mmList = [
     {"id":1,"visible":true,"pair":"AEON",url:"https://webaeon.semipool.com","api":"https://webaeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
