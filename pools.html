@@ -279,17 +279,20 @@
 
     }
     var totalMMPending = 0;
+    var totalMMLastFound = 0;
     function renderMMData(mmData){
         totalMMPending = 0;
         for(let i= 0; i < mmData.length; i++){
             if (mmData[i].status) {
                 if(mmData[i].data.length !== 0){
                     blocTimeAgo = jQuery.timeago(new Date(parseInt(mmData[i].data[0].ts)));
+                    totalMMLastFound = mmData[i].data[0].ts > totalMMLastFound ? mmData[i].data[0].ts : totalMMLastFound;
                 } else {
                     blocTimeAgo = "N/A";
                 }
                 pending = calculateMMPending(mmData[i].data);
                 totalMMPending += pending;
+
                 flag = mmData[i].flag !== undefined ? '<img class="flag" src="images/flags/'+mmData[i].flag.toLowerCase()+'.svg">' : '';
                 loc = mmData[i].loc !== undefined ? 'data-toggle="popover" data-trigger="hover" data-placement="top" data-content="'+mmData[i].loc+'" ' : '';
 
@@ -319,10 +322,8 @@
     function calculateMMPending(data) {
         c = 0;
         for(let i= 0; i < data.length; i++) {
-            if((i+1) % 2 === 0){
-                if(data[i].height > ($('#blockchainHeight').attr('data-height') - 20)){
-                    c++;
-                }
+            if(data[i].height > ($('#blockchainHeight').attr('data-height') - 20)){
+                c++;
             }
         }
         return c;
@@ -427,7 +428,7 @@
         updateText('totalHeight', parseInt($('#blockchainHeight').attr('data-height')));
         updateText('totalMiners', totalMiners);
         updateText('totalHashrate', getReadableHashRateString(totalHashrate));
-        updateText('totalLastFound', jQuery.timeago(new Date(parseInt(totalLastFound))));
+        updateText('totalLastFound', jQuery.timeago(new Date(parseInt(totalMMLastFound > totalLastFound ? totalMMLastFound : totalLastFound))));
         updateText('totalPending',totalPending+totalMMPending);
         updateText('totalDonations', totalDonations.toFixed(2)+'%');
         updateText('totalFees', totalFee.toFixed(2)+'%');
