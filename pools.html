@@ -339,8 +339,8 @@
 
                 if (document.getElementById("mmHost-"+mmData[i].id)){
                     updateText('mmHeight-'+mmData[i].id, height);
-                    updateText('hr-'+mmData[i].id, hr);
-                    updateText('miners-'+mmData[i].id, miners);
+                    updateText('mmHr-'+mmData[i].id, hr);
+                    updateText('mmMiners-'+mmData[i].id, miners);
                     updateText('mmLastBlockFound-'+mmData[i].id, blocTimeAgo);
                     updateText('mmPending-'+mmData[i].id, pending);
                 } else {
@@ -349,8 +349,8 @@
                         '<td id=mmHost-' + mmData[i].id + '>' +
                         '<a '+loc+'target=blank href='+ mmData[i].url + '>'+ flag + ' ' + mmData[i].url + '</a> <span class="badge badge-secondary float-right">'+ mmData[i].pair+'</span></td>' +
                         '<td id=mmHeight-' + mmData[i].id + '>'+height+'</td>'+
-                        '<td id=hr-' + mmData[i].id + '>'+hr+'</td>'+
-                        '<td id=miners-' + mmData[i].id + '>'+miners+'</td>'+
+                        '<td id=mmHr-' + mmData[i].id + '>'+hr+'</td>'+
+                        '<td id=mmMiners-' + mmData[i].id + '>'+miners+'</td>'+
                         '<td id=mmLastBlockFound-' + mmData[i].id + '>' + blocTimeAgo + '</td>' +
                         '<td id=mmPending-' + mmData[i].id + '>' + pending + '</td>' +
                         '<td>-</td>'+
