@@ -59,8 +59,8 @@
                     <th colspan="8">Merged mining pools</th>
                 </tr>
                 <tr class="table-dark">
-                    <td>Address</td>
-                    <td><i class="fa fa-bars"></i> Parent coin</td>
+                    <td>Address / Parent coin</td>
+                    <td><i class="fa fa-bars"></i> height</td>
                     <td><i class="fas fa-tachometer-alt"></i> Hashrate</td>
                     <td><i class="fas fa-users"></i> Miners</td>
                     <td><i class="far fa-clock"></i> Last mined block</td>
@@ -227,10 +227,12 @@
 
         // fetch mm pools stats
         mmData.length=0;
+        fetchedMmData= []
         for (let i = 0, len = mmList.length; i < len; i++) {
             if(mmList[i].status) {
                 if (mmList[i].visible) {
                     mmData.length = 0;
+                    fetchedMmData.length = 0;
                     xhrGetCurrentMMStat = $.ajax({
                         url: mmList[i].api,
                         method: "GET",
@@ -246,28 +248,59 @@
                     })
                         .done(function (data) {
                             if (data.length !== 0) {
-                                if(data[0].coin === "IRD"){ // content exist
-                                    d = {"id": this.mmId, "url": this.mmUrl, "status": this.mmStatus, "flag":this.mmFlag,"loc":this.mmLoc, "pair":this.mmPair, data};
-                                    mmData.push(d);
+                                if (data.hasOwnProperty('network')) { // normal response
+                                    d = {
+                                        "id": this.mmId,
+                                        "url": this.mmUrl,
+                                        "status": this.mmStatus,
+                                        "flag":this.mmFlag,
+                                        "loc":this.mmLoc,
+                                        "pair":this.mmPair,
+                                        "height":data.network.height,
+                                        "hr":data.pool.hashrate,
+                                        "miners":data.pool.miners,
+                                        // "miners":"N/A",
+                                        "lastBlockFound":data.pool.lastBlockFound,
+                                        "blocks":calculatePending(data.pool.blocks)
+                                    };
+                                    fetchedMmData.push(d);
+                                    $.extend(true, mmData, fetchedMmData);
+                                } else if(data[0].coin === "IRD"){ // semipool
+                                    d = {"id": this.mmId,
+                                        "url": this.mmUrl,
+                                        "status": this.mmStatus,
+                                        "flag":this.mmFlag,
+                                        "loc":this.mmLoc,
+                                        "pair":this.mmPair,
+                                        "height":"N/A",
+                                        "hr":"N/A",
+                                        "miners":"N/A",
+                                        "lastBlockFound":data[0].ts,
+                                        "blocks":calculateMMPending(data)
+                                        };
+                                    fetchedMmData.push(d);
+                                    $.extend(true, mmData, fetchedMmData);
                                 }
 
                             } else { // response ok, but nothing to show
                                 d = {"id": this.mmId, "url": this.mmUrl, "status":  this.mmStatus, "flag":this.mmFlag,"loc":this.mmLoc, "pair":this.mmPair, data};
-                                mmData.push(d);
+                                fetchedMmData.push(d);
+                                $.extend(true, mmData, fetchedMmData);
                             }
                         })
                         .fail(function (xhrGetCurrentPoolStat, status) {
                             d = {"id": this.mmId, "url": this.mmUrl, "status": false, "error": status};
-                            mmData.push(d);
+                            fetchedMmData.push(d);
+                            $.extend(true, mmData, fetchedMmData);
                         })
                         .always(function () {
                             renderMMData(mmData);
                         });
-                } // end if enabled
-            } else {
+                } // end visible
+            } else { // end status
                 d = {"id": mmList[i].id, "url": mmList[i].url};
-                mmData.push(d); //  disabled
-                renderMMData(mmData);
+                fetchedMmData.push(d);
+                $.extend(true, mmData, fetchedMmData);
             }
         }
 
@@ -280,33 +313,44 @@
     }
     var totalMMPending = 0;
     var totalMMLastFound = 0;
+    var totalMMminers = 0;
+    var totalMMHr = 0;
     function renderMMData(mmData){
+        totalMMHr = 0;
         totalMMPending = 0;
         for(let i= 0; i < mmData.length; i++){
             if (mmData[i].status) {
-                if(mmData[i].data.length !== 0){
-                    blocTimeAgo = jQuery.timeago(new Date(parseInt(mmData[i].data[0].ts)));
-                    totalMMLastFound = mmData[i].data[0].ts > totalMMLastFound ? mmData[i].data[0].ts : totalMMLastFound;
-                } else {
-                    blocTimeAgo = "N/A";
-                }
-                pending = calculateMMPending(mmData[i].data);
+                blocTimeAgo = jQuery.timeago(new Date(parseInt(mmData[i].lastBlockFound)));
+                totalMMLastFound = mmData[i].lastBlockFound > totalMMLastFound ? mmData[i].lastBlockFound : totalMMLastFound;
+                height = mmData[i].height;
+                hr = mmData[i].hr;
+                totalMMHr+=mmData[i].hr != "N/A" ? mmData[i].hr:0;
+                hr = mmData[i].hr != "N/A" ? getReadableHashRateString(mmData[i].hr) : "N/A";
+                pending=mmData[i].blocks;
                 totalMMPending += pending;
-
+                miners = mmData[i].miners;
+                totalMMminers += miners != "N/A" ? miners: 0 ;
+                if(Math.abs(parseInt($('#blockchainHeight').attr('data-height'), 10) - mmData[i].height)> 3) {
+                    height = 'Out of sync'; // not synced
+                    hr='N/A';
+                }
                 flag = mmData[i].flag !== undefined ? '<img class="flag" src="images/flags/'+mmData[i].flag.toLowerCase()+'.svg">' : '';
                 loc = mmData[i].loc !== undefined ? 'data-toggle="popover" data-trigger="hover" data-placement="top" data-content="'+mmData[i].loc+'" ' : '';
 
                 if (document.getElementById("mmHost-"+mmData[i].id)){
+                    updateText('mmHeight-'+mmData[i].id, height);
+                    updateText('hr-'+mmData[i].id, hr);
+                    updateText('miners-'+mmData[i].id, miners);
                     updateText('mmLastBlockFound-'+mmData[i].id, blocTimeAgo);
                     updateText('mmPending-'+mmData[i].id, pending);
                 } else {
 
                     $('#mm_rows').append('<tr>' +
                         '<td id=mmHost-' + mmData[i].id + '>' +
-                        '<a '+loc+'target=blank href='+ mmData[i].url + '>'+ flag + ' ' + mmData[i].url + '</a></td>' +
-                        '<td class=""><span class="badge badge-secondary">'+ mmData[i].pair+'</span></td>'+
-                        '<td>-</td>'+
-                        '<td>-</td>'+
+                        '<a '+loc+'target=blank href='+ mmData[i].url + '>'+ flag + ' ' + mmData[i].url + '</a> <span class="badge badge-secondary float-right">'+ mmData[i].pair+'</span></td>' +
+                        '<td id=mmHeight-' + mmData[i].id + '>'+height+'</td>'+
+                        '<td id=hr-' + mmData[i].id + '>'+hr+'</td>'+
+                        '<td id=miners-' + mmData[i].id + '>'+miners+'</td>'+
                         '<td id=mmLastBlockFound-' + mmData[i].id + '>' + blocTimeAgo + '</td>' +
                         '<td id=mmPending-' + mmData[i].id + '>' + pending + '</td>' +
                         '<td>-</td>'+
@@ -332,21 +376,20 @@
     function renderPoolData(poolData){
         let totalMiners = 0;
         let totalHashrate = 0;
-        let totalHeight = 0;
         let nbPoolOk = 0;
         let totalLastFound = 0;
         let totalPending = 0;
         let totalDonations = 0;
         let totalFee = 0 ;
         for(let i= 0; i < poolData.length; i++){
-            st = poolData[i].status; // false if an error occurs, get error in "error" ans if disabled in config
+            st = poolData[i].status; // false if an error occurs, get error in "error" and if disabled in config
             if (st){
                 height = poolData[i].data.network.height;
                 hashrate = getReadableHashRateString(poolData[i].data.pool.hashrate);
                 poolCoeff=poolData[i].data.pool.hashrate/$('#networkHashrate').attr('data-globalHR');
                 miners = poolData[i].data.pool.miners;
                 blocTimeAgo = jQuery.timeago(new Date(parseInt(poolData[i].data.pool.lastBlockFound)));
-                pending = calculatePending(poolData[i].data);
+                pending = calculatePending(poolData[i].data.pool.blocks);
                 donation = calculateDonations(poolData[i].data);
                 fee = calculateTotalFee(poolData[i].data);
                 flag = poolData[i].flag !== undefined ? '<img class="flag" src="images/flags/'+poolData[i].flag.toLowerCase()+'.svg">' : '';
@@ -384,7 +427,7 @@
 
                 } else { //synced
                     nbPoolOk += 1;
-                    totalHeight += height;
+                    console.log(poolData[i].data.pool.hashrate);
                     totalHashrate += poolData[i].data.pool.hashrate;
                     totalMiners += miners;
                     totalLastFound = poolData[i].data.pool.lastBlockFound > totalLastFound ? poolData[i].data.pool.lastBlockFound : totalLastFound;
@@ -426,8 +469,8 @@
             }
         } // end for
         updateText('totalHeight', parseInt($('#blockchainHeight').attr('data-height')));
-        updateText('totalMiners', totalMiners);
-        updateText('totalHashrate', getReadableHashRateString(totalHashrate));
+        updateText('totalMiners', totalMiners+totalMMminers);
+        updateText('totalHashrate', getReadableHashRateString(totalHashrate+totalMMHr));
         updateText('totalLastFound', jQuery.timeago(new Date(parseInt(totalMMLastFound > totalLastFound ? totalMMLastFound : totalLastFound))));
         updateText('totalPending',totalPending+totalMMPending);
         updateText('totalDonations', totalDonations.toFixed(2)+'%');
@@ -464,11 +507,11 @@
         return totalDonations;
     }
 
-    function calculatePending(data) {
+    function calculatePending(blocks) {
         c = 0;
-        for(let i= 0; i < data.pool.blocks.length; i++) {
+        for(let i= 0; i < blocks.length; i++) {
             if((i+1) % 2 === 0){
-                if(data.pool.blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
+                if(blocks[i] > ($('#blockchainHeight').attr('data-height') - 20)){
                     c++;
                 }
             }
