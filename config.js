@@ -23,7 +23,7 @@ const poolList = [
     // {"id":13,"visible":false,"url":"http://iridiumcoin.sixpools.tk","api":"https://mig.ird.cash/six","status":false},
     {"id":14,"visible":true,"url":"http://youpool.io/IRD","api":"https://mig.ird.cash/io","status":false,"flag":"US","loc":"Arizona"},
     {"id":15,"visible":true,"url":"http://ird.cryptoisme.com","api":"https://mig.ird.cash/cryptoisme","status":true,"flag":"ID","loc":"Indonesia"},
-    {"id":16,"visible":true,"url":"http://coinpoolit.webhop.me/ird","api":"https://mig.ird.cash/coinpoolit","status":true,"flag":"IT","loc":"Italy"},
+    {"id":16,"visible":true,"url":"https://coinpoolit.webhop.me/ird","api":"https://ns3128504.ip-51-68-204.eu:8119","status":true,"flag":"IT","loc":"Italy"},
     {"id":17,"visible":true,"url":"https://matamu.me/iridium","api":"https://matamu.me:5119","status":false,"flag":"DE","loc":"Germany"},
     {"id":18,"visible":true,"url":"https://iridium.clevery.xyz","api":"https://iridium.clevery.xyz/api","status":true,"flag":"FR","loc":"France"},
     {"id":19,"visible":true,"url":"https://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES","loc":"Spain"},
