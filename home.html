@@ -27,7 +27,7 @@
                     </span>
                 </p>
                 <p>
-                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="On the last 31 blocks">
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="On the last 11 blocks">
                         <i class="fas fa-percent"></i></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
                 </p>
@@ -341,9 +341,11 @@
                 let blockElement = getBlockRowElement(blocksList[i]);
                 $('#blocks_rows').append(blockElement);
             }
-            sumDiff += blocksList[i].difficulty;
+            if (i < 11) {
+                sumDiff += blocksList[i].difficulty;
+            }
         }
-        let averageHashRate = sumDiff / 31;
+        let averageHashRate = sumDiff / 11; // calculate on last 11 blocks
         updateText('averageHashrate', getReadableHashRateString(averageHashRate / coinDifficultyTarget));
         $('#loading').hide();
     }

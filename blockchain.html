@@ -21,7 +21,7 @@
             </div>
             <div class="col-sm-3">
                 <span data-toggle="popover" data-trigger="hover" data-placement="top"
-                      data-content="On the last 31 blocks">
+                      data-content="On the last 11 blocks">
                         <i class="fas fa-percent"></i> Average Hash Rate: <span id="averageHashrate"></span>
                     </span>
             </div>
@@ -203,7 +203,7 @@
         }
 
         let sumDiffLastVisible = 0;
-        let avgHashrateBlockCount = 31;
+        let avgHashrateBlockCount = 11;
 
         const rows = blocksRows.children().get();
 
