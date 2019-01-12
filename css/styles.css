@@ -193,6 +193,12 @@ footer {
     text-align: center;
 
 }
+#ams{
+    /*color: #00FF00;*/
+    font-size: 1.2em;
+    text-align: center;
+
+}
 .nodes {
     margin-top: -1.5em;
 }

@@ -33,8 +33,7 @@ const mmList = [
 ];
 
 const seedsNodes = [
-    {"id":"rbx","url":"https://ns3024204.ip-178-33-231.eu"},
-    {"id":"mtl","url":"https://ns523581.ip-158-69-127.net"},
-    {"id":"sdn","url":"https://ns543550.ip-139-99-131.net"},
+    {"id":"sdn","url":"https://explorer.ird.cash/sdn"},
     {"id":"exp","url":"https://explorer.ird.cash/exp"},
+    {"id":"ams","url":"https://explorer.ird.cash/ams"},
 ];
