@@ -29,7 +29,8 @@ const mmList = [
     {"id":5,"visible":true,"pair":"ARQ",url:"https://arqidium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019/stats","status":true,"flag":"US","loc":"Tennessee"},
     {"id":6,"visible":true,"pair":"AEON",url:"https://aeon.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"},
     {"id":7,"visible":true,"pair":"ARQ",url:"https://arqma.minercountry.com","api":"https://arqma.minercountry.com/mapi/stats","status":true,"flag":"GB","loc":"London"},
-    {"id":8,"visible":true,"pair":"ARQ",url:"https://arq.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"}
+    {"id":8,"visible":true,"pair":"ARQ",url:"https://arq.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"},
+    {"id":9,"visible":true,"pair":"XTRI",url:"https://xtridium.minercountry.com","api":"https://xtridium.minercountry.com/mapi/stats","status":true,"flag":"CA","loc":"Montreal"}
 ];
 
 const seedsNodes = [
