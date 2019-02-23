@@ -30,7 +30,8 @@ const mmList = [
     {"id":6,"visible":true,"pair":"AEON",url:"https://aeon.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"},
     {"id":7,"visible":true,"pair":"ARQ",url:"https://arqma.minercountry.com","api":"https://arqma.minercountry.com/mapi/stats","status":true,"flag":"GB","loc":"London"},
     {"id":8,"visible":true,"pair":"ARQ",url:"https://arq.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"},
-    {"id":9,"visible":true,"pair":"XTRI",url:"https://xtridium.minercountry.com","api":"https://xtridium.minercountry.com/mapi/stats","status":true,"flag":"CA","loc":"Montreal"}
+    {"id":9,"visible":true,"pair":"XTRI",url:"https://xtridium.minercountry.com","api":"https://xtridium.minercountry.com/mapi/stats","status":true,"flag":"CA","loc":"Montreal"},
+    {"id":10,"visible":true,"pair":"ARQ",url:"https://iridium-arqma.bluerockpools.net","api":"https://iridium-arqma.bluerockpools.net:8114/stats","status":true,"flag":"US","loc":"Minneapolis"}
 ];
 
 const seedsNodes = [
