@@ -265,7 +265,7 @@
                                     };
                                     fetchedMmData.push(d);
                                     $.extend(true, mmData, fetchedMmData);
-                                } else if(data[0].coin === "IRD"){ // semipool
+                                } else if(data[0].hasOwnProperty('coin') && data[0].coin  === "IRD"){ // semipool
                                     d = {"id": this.mmId,
                                         "url": this.mmUrl,
                                         "status": this.mmStatus,
@@ -284,7 +284,7 @@
                                 }
 
                             } else { // response ok, but nothing to show
-                                d = {"id": this.mmId, "url": this.mmUrl, "status":  this.mmStatus, "flag":this.mmFlag,"loc":this.mmLoc, "pair":this.mmPair, data};
+                                d = {"id": this.mmId, "url": this.mmUrl, "status":  false, "flag":this.mmFlag,"loc":this.mmLoc, "pair":this.mmPair, data};
                                 fetchedMmData.push(d);
                                 $.extend(true, mmData, fetchedMmData);
                             }
