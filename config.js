@@ -19,7 +19,8 @@ const poolList = [
     {"id":9,"visible":true,"url":"https://ird.soyminero.es","api":"https://mig.ird.cash/soyminero","status":true,"flag":"ES","loc":"Spain"},
     {"id":10,"visible":true,"url":"https://iridium.cnpools.space","api":"https://iridium.cnpools.space:8119","status":false,"flag":"US","loc":"New-York"},
     {"id":11,"visible":true,"url":"https://ird.codpool.com","api":"https://pool1.codpool.com:8118","status":true,"flag":"US","loc":"New-York"},
-    {"id":12,"visible":true,"url":"https://webird.semipool.com","api":"https://mig.ird.cash/semipool","status":true,"flag":"FR","loc":"France"}
+    {"id":12,"visible":true,"url":"https://webird.semipool.com","api":"https://mig.ird.cash/semipool","status":true,"flag":"FR","loc":"France"},
+    {"id":13,"visible":true,"url":"https://iridium.hashvault.pro","api":"https://mig.ird.cash/hashvault","status":true,"flag":"FR","loc":"France"}
 ];
 const mmList = [
     {"id":1,"visible":true,"pair":"AEON",url:"https://webaeon.semipool.com","api":"https://webaeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
