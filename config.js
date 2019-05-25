@@ -25,13 +25,13 @@ const poolList = [
 const mmList = [
     {"id":1,"visible":true,"pair":"AEON",url:"https://webaeon.semipool.com","api":"https://webaeon.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
     {"id":2,"visible":true,"pair":"XTRI",url:"https://webxtri.semipool.com","api":"https://webxtri.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
-    {"id":3,"visible":true,"pair":"ARQ",url:"https://webarq.semipool.com","api":"https://webarq.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
+    {"id":3,"visible":false,"pair":"ARQ",url:"https://webarq.semipool.com","api":"https://webarq.semipool.com/api/pool/altblocks/ird?page=0&limit=20","status":true,"flag":"FR","loc":"France"},
     {"id":4,"visible":true,"pair":"AEON",url:"https://aeon.minercountry.com/ird","api":"https://aeon.minercountry.com/irdapi/stats","status":true,"flag":"GB","loc":"London"},
-    {"id":5,"visible":true,"pair":"ARQ",url:"https://arqidium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019/stats","status":true,"flag":"US","loc":"Tennessee"},
+    {"id":5,"visible":false,"pair":"ARQ",url:"https://arqidium.smartcoinpool.com","api":"https://iridium.smartcoinpool.com:9019/stats","status":true,"flag":"US","loc":"Tennessee"},
     {"id":6,"visible":true,"pair":"AEON",url:"https://aeon.hackerknowledge.de","api":"https://pool.ird.hackerknowledge.de:8319/stats","status":true,"flag":"DE","loc":"Germany"},
-    {"id":7,"visible":true,"pair":"ARQ",url:"https://arqma.minercountry.com","api":"https://arqma.minercountry.com/mapi/stats","status":true,"flag":"GB","loc":"London"},
+    {"id":7,"visible":false,"pair":"ARQ",url:"https://arqma.minercountry.com","api":"https://arqma.minercountry.com/mapi/stats","status":true,"flag":"GB","loc":"London"},
     {"id":9,"visible":true,"pair":"XTRI",url:"https://xtridium.minercountry.com","api":"https://xtridium.minercountry.com/mapi/stats","status":true,"flag":"CA","loc":"Montreal"},
-    {"id":10,"visible":true,"pair":"ARQ",url:"https://iridium-arqma.bluerockpools.net","api":"https://iridium-arqma.bluerockpools.net:8114/stats","status":false,"flag":"US","loc":"Minneapolis"}
+    {"id":10,"visible":false,"pair":"ARQ",url:"https://iridium-arqma.bluerockpools.net","api":"https://iridium-arqma.bluerockpools.net:8114/stats","status":false,"flag":"US","loc":"Minneapolis"}
 ];
 
 const seedsNodes = [
