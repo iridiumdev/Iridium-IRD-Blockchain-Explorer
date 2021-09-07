@@ -190,7 +190,8 @@
                     updateTextLinkable('block.hash', formatBlockLink(block.hash));
                     updateText('block.height', block.height);
                     updateText('block.timestamp', formatDate(block.timestamp));
-                    updateText('block.height', block.height);
+                    console.log(lastMinedBlockHeader.block_header.height);
+                    updateText('block.confirm', lastMinedBlockHeader.block_header.height - block.height + ' / 20'  );
                     renderInputs(inputs);
                     renderOutputs(outputs);
                     $('#loading').hide();
