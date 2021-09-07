@@ -1,4 +1,25 @@
-@import url('https://fonts.googleapis.com/css?family=Lato');
+/* Iridium (IRD) ChaletComprime-CologneEighty official font */
+@font-face {
+  font-family: ChaletComprime;
+  src: url('/fonts/ChaletComprime-CologneEighty.woff2') format('woff2'), 
+       url('/fonts/ChaletComprime-CologneEighty.woff') format('woff'), 
+       url('/fonts/ChaletComprime-CologneEighty.ttf')  format('truetype');
+}
+
+/* lato-regular - latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/lato-v17-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('/fonts/lato-v17-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('/fonts/lato-v17-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('/fonts/lato-v17-latin-regular.woff') format('woff'), /* Modern Browsers */
+       url('/fonts/lato-v17-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('/fonts/lato-v17-latin-regular.svg#Lato') format('svg'); /* Legacy iOS */
+}
+
 /*globals*/
 body {
     overflow-y: scroll;
@@ -35,9 +56,18 @@ footer {
     background-color: #dddddd;
 }
 
+.irdfontup {
+    font-family: ChaletComprime, Lato, Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    font-size: 22px;
+}
+
+.irdfont {
+    font-family: ChaletComprime, Lato, Helvetica, Arial, sans-serif;
+}
+
 /*navbar*/
 .navbar-brand {
-    font-size: 15px;
     padding-bottom: 0;
 }
 .navbar-dark {

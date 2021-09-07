@@ -2,7 +2,7 @@
     <div class="col-sm-6">
         <div class="cardpad card">
             <div class="card-header">
-                <h2>Network status</h2>
+                <h2>Network Status</h2>
                 <div class="nodes float-right">
 <!--                <div id="sdn" class="float-right" title="SDN nodes" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="">
                         <i class="fas fa-plug"></i>
@@ -43,7 +43,7 @@
     <div class="col-sm-6">
         <div class="cardpad card">
             <div class="card-header">
-                <h2>Supply status</h2>
+                <h2>Supply Status</h2>
             </div>
             <div class="card-body">
                 <p>
@@ -53,17 +53,17 @@
                 </p>
                 <p>
                     <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Percentage of overall mined coins">
-                        <i class="fas fa-university"></i> Total emission: <span id="supplypercent"></span>
+                        <i class="fas fa-university"></i> Total Emission: <span id="supplypercent"></span>
                     </span>
                 </p>
 
                 <p>
-                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Already transactions done">
-                    <i class="fas fa-exchange-alt"></i> Total transactions: <span id="alreadyGeneratedTransactions"></span>
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Transactions already done">
+                    <i class="fas fa-exchange-alt"></i> Total Transactions: <span id="alreadyGeneratedTransactions"></span>
                     </span>
                 </p>
                 <p>
-                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Reward of the last found block">
+                    <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Reward of the last block found">
                         <i class="fas fa-piggy-bank"></i> Last Reward: <span id="networkLastReward"></span>
                     </span>
                 </p>
@@ -87,14 +87,14 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Waiting transaction(s) in pool" id="nb_tx"></span>
+        <span data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Transactions waiting in the pool" id="nb_tx"></span>
         <i id="tx_updated" class="fas fa-sync fa-spin"></i>
     </div>
     <div id="tx_table" class="card-body table-responsive d-none">
         <table class="table table-hover">
             <thead>
             <tr>
-                <th><i class="fas fa-ellipsis-h"></i> Transaction hash</th>
+                <th><i class="fas fa-ellipsis-h"></i> Transaction Hash</th>
                 <th><i class="fas fa-donate"></i> Fee</th>
                 <th><i class="fas fa-dollar-sign"></i> Total Amount</th>
                 <th><i class="far fa-hdd"></i> Size</th>
@@ -109,7 +109,7 @@
 
 <div class="cardpad card">
     <div class="card-header">
-        Lasts 10 blocks found
+        Lasts 10 Blocks Found
     </div>
     <div id="block_table" class="card-body table-responsive">
         <table class="table table-hover">
@@ -179,7 +179,7 @@
                 method: "GET",
                 dataType: 'json',
                 cache: 'false',
-                timeout: 15000,
+                timeout: 20000,
                 servId: seedsNodes[i].id,
             })
                 .done(function (data) {

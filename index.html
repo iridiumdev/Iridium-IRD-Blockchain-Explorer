@@ -3,7 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
-    <title>Iridium network statistics and blockchain explorer</title>
+    <title>Iridium (IRD) Network Statistics and Blockchain Explorer</title>
+    <meta name="Description" content="Explore the Blockchain universe of the most advanced, private and fair cryptocurrency, your Iridium (IRD) coin.">
+    <link rel="canonical" href="https://explorer.ird.cash">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Iridium (IRD) Network Statistics and Blockchain Explorer">
+    <meta property="og:description" content="Explore the Blockchain universe of the most advanced, private and fair cryptocurrency, your Iridium (IRD) coin.">
+    <meta property="og:url" content="https://explorer.ird.cash">
+    <meta property="og:site_name" content="Iridium (IRD) Network Statistics and Blockchain Explorer">
+    <meta property="article:publisher" content="https://www.facebook.com/IridiumCoin">
+    <meta property="article:modified_time" content="2021-05-30T15:23:27+00:00">
+    <meta property="og:image" content="https://explorer.ird.cash/explorer.jpg">
+    <meta property="og:image:width" content="876">
+    <meta property="og:image:height" content="440">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Iridium (IRD) Network Statistics and Blockchain Explorer">
+    <meta name="twitter:description" content="Explore the Blockchain universe of the most advanced, private and fair cryptocurrency, your Iridium (IRD) coin.">
+    <meta name="twitter:image" content="https://explorer.ird.cash/explorer.jpg">
+    <meta name="twitter:site" content="@iridiumCash">
+    <meta name="twitter:label1" content="Est. reading time">
+    <meta name="twitter:data1" content="1 minute">
+
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.6.3/jquery.timeago.min.js" integrity="sha256-3S5uFNXUTbSzidUyam/9OVgDhJ2Yx1rmb6F+Ju3/6WE=" crossorigin="anonymous"></script>
@@ -11,13 +32,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <link href="css/styles.css" rel="stylesheet">
+    <link rel="icon" href="https://explorer.ird.cash/cropped-iridiumlogo_512x512-32x32.png" sizes="32x32">
+    <link rel="icon" href="https://explorer.ird.cash/cropped-iridiumlogo_512x512-192x192.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="https://explorer.ird.cash/cropped-iridiumlogo_512x512-180x180.png">
+    <meta name="msapplication-TileImage" content="https://explorer.ird.cash/cropped-iridiumlogo_512x512-270x270.png">
     <script src="config.js"></script>
 </head>
 <body>
     <header class="navbar navbar-expand-md navbar-dark fixed-top">
         <a id="home" class="navbar-brand" href="#" data-page="home.html">
             <img class="logo-small img-fluid" src="images/64x64.png" alt="Iridium logo">
-            Iridium Explorer
+            <span class="irdfontup">Iridium (IRD)</span> Blockchain Explorer
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
                 aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +104,7 @@
     function getLastMinedBlockHeader() {
         if (xhrGetLastMinedBlockHeader) xhrGetLastMinedBlockHeader.abort();
         xhrGetLastMinedBlockHeader = $.ajax({
-            timeout: 5000,
+            timeout: 20000,
             url: api + '/json_rpc',
             method: "POST",
             data: JSON.stringify({
@@ -116,7 +141,7 @@
         if (xhrFetchLastMinedBlockHeader) xhrFetchLastMinedBlockHeader.abort();
         pulseLiveUpdate();
         xhrFetchLastMinedBlockHeader = $.ajax({
-            timeout: 5000,
+            timeout: 20000,
             url: api + '/json_rpc',
             method: "POST",
             data: JSON.stringify({
@@ -219,7 +244,7 @@
     // transform raw amount by readble (+ symbol)
     function getReadableCoins(coins, digits, withoutSymbol) {
         var amount = (parseInt(coins || 0) / coinUnits).toFixed(digits || coinUnits.toString().length - 1);
-        return amount + (withoutSymbol ? '' : (' ' + symbol));
+        return amount + (withoutSymbol ? '' : (' (' + symbol+')'));
     }
 
     // do I have to explain ?
@@ -256,7 +281,7 @@
     }
 
     function formatBlockLink(hash) {
-        return '<a href="' + getBlockchainUrl(hash) + '">' + hash + '</a>';
+        return '<a href="' + getBlockchainUrl(hash) + '" rel="nofollow">' + hash + '</a>';
     }
 
     function getTransactionUrl(id) {
@@ -264,7 +289,7 @@
     }
 
     function formatPaymentLink(hash){
-        return '<a href="' + getTransactionUrl(hash) + '">' + hash + '</a>';
+        return '<a href="' + getTransactionUrl(hash) + '" rel="nofollow">' + hash + '</a>';
     }
 
     urlParam = function(name){

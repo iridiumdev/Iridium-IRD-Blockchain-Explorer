@@ -1,5 +1,6 @@
 // settings
-const api = "https://explorer.ird.cash";
+//const api = "https://explorer.ird.cash";
+const api = "";
 const coinDifficultyTarget=175;
 const symbol="IRD";
 const coinUnits=100000000;

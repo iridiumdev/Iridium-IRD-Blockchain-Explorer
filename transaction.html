@@ -128,7 +128,6 @@
             $("#home")[0].search = "";
             $("#home1")[0].search = "";
             $("#block")[0].search = "";
-            $("#pools")[0].search = "";
             if(typeof poolUpdate !== 'undefined') {
                 clearTimeout(poolUpdate);
             }
@@ -156,6 +155,7 @@
     function renderTransaction(){
         if (xhrGetTransaction) xhrGetTransaction.abort();
         xhrGetTransaction = $.ajax({
+            timeout: 20000,
             url: api + '/json_rpc',
             method: "POST",
             data: JSON.stringify({
